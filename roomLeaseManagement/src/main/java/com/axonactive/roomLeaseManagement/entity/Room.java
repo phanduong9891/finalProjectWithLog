@@ -1,8 +1,6 @@
 package com.axonactive.roomLeaseManagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,7 +8,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +17,7 @@ public class Room {
     @NotNull
     @Column(nullable = false)
     private int roomNumber;
-    private String roomType;
+    private String roomType;//may need to change to enum
     @NotNull
     @Column(nullable = false)
     private RoomStatus status;

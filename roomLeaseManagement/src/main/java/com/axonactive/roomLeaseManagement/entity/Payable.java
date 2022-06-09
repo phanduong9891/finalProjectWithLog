@@ -1,15 +1,14 @@
 package com.axonactive.roomLeaseManagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class Payable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +18,5 @@ public class Payable {
 
     @JoinColumn
     @ManyToOne
-    private MonthyPayment monthyPayment;
+    private MonthlyPayment monthlyPayment;
 }
