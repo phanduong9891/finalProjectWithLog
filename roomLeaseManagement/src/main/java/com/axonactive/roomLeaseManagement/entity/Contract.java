@@ -1,8 +1,6 @@
 package com.axonactive.roomLeaseManagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,7 +9,8 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

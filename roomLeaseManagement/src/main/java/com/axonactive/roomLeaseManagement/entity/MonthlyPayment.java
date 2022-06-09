@@ -1,8 +1,6 @@
 package com.axonactive.roomLeaseManagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,8 +8,9 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class MonthyPayment {
+@Getter
+@Setter
+public class MonthlyPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,5 +28,6 @@ public class MonthyPayment {
     @JoinColumn
     @ManyToOne
     private Contract contract;
+
 
 }
