@@ -12,5 +12,5 @@ public interface RoomMapper {
     RoomMapper INSTANCE = Mappers.getMapper(RoomMapper.class);
 
     RoomDto toDto(Room room);
-    List<RoomDto> toDtos(List<RoomDto> roomDtoList);
+    List<RoomDto> toDtos(List<Room> roomList);
 }

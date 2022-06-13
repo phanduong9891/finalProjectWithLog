@@ -12,7 +12,8 @@ import java.util.List;
 public interface AssetsMapper {
     AssetsMapper INSTANCE = Mappers.getMapper(AssetsMapper.class);
 
-   AssetsDto toDto(Assets assets);
+    @Mapping(source = "room.roomNumber", target = "roomNumber")
+    AssetsDto toDto(Assets assets);
 
-   List<AssetsDto> toDtos(List<Assets> assetsList);
+    List<AssetsDto> toDtos(List<Assets> assetsList);
 }

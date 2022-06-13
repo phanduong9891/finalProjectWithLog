@@ -36,4 +36,6 @@ public class AssetsServiceImpl implements AssetsService {
         assetsRepository.deleteById(id);
 
     }
+
+
 }

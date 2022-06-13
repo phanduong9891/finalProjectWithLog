@@ -1,17 +1,12 @@
 package com.axonactive.roomLeaseManagement.api;
 
-import com.axonactive.roomLeaseManagement.entity.AssetStatus;
 import com.axonactive.roomLeaseManagement.entity.Assets;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.AssetsRequest;
-import com.axonactive.roomLeaseManagement.service.AssetsService;
 import com.axonactive.roomLeaseManagement.service.Impl.AssetsServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.RoomServiceImpl;
-import com.axonactive.roomLeaseManagement.service.RoomService;
 import com.axonactive.roomLeaseManagement.service.dto.AssetsDto;
 import com.axonactive.roomLeaseManagement.service.mapper.AssetsMapper;
-import com.axonactive.roomLeaseManagement.service.mapper.RoomMapper;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +32,7 @@ public class AssetsResource {
     @GetMapping("/{id}")
     public ResponseEntity<AssetsDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Assets assets = assetsService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
         return ResponseEntity.ok().body(AssetsMapper.INSTANCE.toDto(assets));
     }
 
@@ -70,10 +65,9 @@ public class AssetsResource {
         editAssets.setQuantity(assetsRequest.getQuantity());
         editAssets.setPrice(assetsRequest.getPrice());
         editAssets.setStatus(assetsRequest.getStatus());
-        editAssets.setRoom(roomService.findById(assetsRequest.getRoomId()).get());
+        editAssets.setRoom(roomService.findById(assetsRequest.getRoomId()).orElseThrow(()-> new org.springframework.data.rest.webmvc.ResourceNotFoundException("Room not found")));
 
         Assets assetsUpdate = assetsService.save(editAssets);
-
 
         return ResponseEntity.ok(AssetsMapper.INSTANCE.toDto(assetsUpdate));
     }

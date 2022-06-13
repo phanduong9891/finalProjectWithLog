@@ -21,6 +21,7 @@ public interface ContractMapper {
     @Mapping(source = "tenant.idCardNumber", target = "idCardNumber")
     @Mapping(source = "tenant.birthday", target = "birthday")
     @Mapping(source = "tenant.relatives.firstName", target = "relativeFirstName")
+    @Mapping(source = "tenant.relatives.relationship", target = "relativeRelationship")
     @Mapping(source = "tenant.relatives.phoneNumber", target = "relativePhoneNumber")
     ContractDto toDto(Contract contract);
     List<ContractDto> toDtos(List<Contract> contractList);

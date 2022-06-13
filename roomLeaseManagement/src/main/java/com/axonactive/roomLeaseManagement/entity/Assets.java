@@ -17,6 +17,8 @@ public class Assets {
     private String name;
     private String quantity;
     private double price;
+    @Column
+    @Enumerated(EnumType.STRING)
     private AssetStatus status;
 
     @JoinColumn

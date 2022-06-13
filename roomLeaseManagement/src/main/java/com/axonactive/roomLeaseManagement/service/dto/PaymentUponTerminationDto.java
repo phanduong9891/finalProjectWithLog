@@ -14,4 +14,7 @@ public class PaymentUponTerminationDto {
     private LocalDate dayCreated;
     private double damageFee;
     private double depositRefund;
+    private String tenantFirstName;
+    private String tenantPhoneNumber;
+    private String tenantIdCardNumber;
 }

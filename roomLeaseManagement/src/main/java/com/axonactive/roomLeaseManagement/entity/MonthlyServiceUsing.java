@@ -3,6 +3,7 @@ package com.axonactive.roomLeaseManagement.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.YearMonth;
 
 @Entity
 @NoArgsConstructor
@@ -14,8 +15,9 @@ public class MonthlyServiceUsing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private double electricityUsage;
+    private YearMonth yearMonth;//may need to change column name
 
     @JoinColumn
     @ManyToOne
-    private Contract contract;
+    private ContractInfo contractInfo;
 }

@@ -11,6 +11,7 @@ import java.util.List;
 public interface RelativesMapper {
     RelativesMapper INSTANCE = Mappers.getMapper(RelativesMapper.class);
 
+
     RelativesDto toDto(Relatives relatives);
     List<RelativesDto> toDtos(List<Relatives> relativesList);
 }

@@ -10,4 +10,5 @@ public interface AssetsService {
     Assets save(Assets assets);
     Optional<Assets> findById(Integer id);
     void deleteById(Integer id);
+
 }

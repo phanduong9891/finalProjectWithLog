@@ -1,4 +1,4 @@
-package com.axonactive.roomLeaseManagement.service.dto;
+package com.axonactive.roomLeaseManagement.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,8 @@ import java.time.YearMonth;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MonthlyServiceUsingDto {
+public class MonthlyServiceUsingRequest {
     private double electricityUsage;
     private YearMonth yearMonth;
-    private int roomNumber;
+    private Integer contractInfoId;
 }
