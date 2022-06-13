@@ -34,18 +34,19 @@ public class ContractResource {
     @GetMapping("/{id}")
     public ResponseEntity<ContractDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Contract contract = contractService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Id not found: " + id));
         return ResponseEntity.ok().body(ContractMapper.INSTANCE.toDto(contract));
     }
 
     @PostMapping
-    public ResponseEntity<ContractDto> create(@RequestBody ContractRequest contractRequest) {
+    public ResponseEntity<ContractDto> create(@RequestBody ContractRequest contractRequest) throws ResourceNotFoundException {
         Contract createContract = contractService.save(
                 new Contract(null,
                         contractRequest.getDateSigned(),
                         contractRequest.getDateExpiry(),
                         contractRequest.getContractValue(),
-                        tenantService.findById(contractRequest.getTenantId()).get())
+                        tenantService.findById(contractRequest.getTenantId())
+                                .orElseThrow(()-> new ResourceNotFoundException("Tenant not found")))
         );
         return ResponseEntity.created(URI.create((ContractResource.PATH + "/" + createContract.getId()))).body(ContractMapper.INSTANCE.toDto(createContract));
     }
@@ -65,7 +66,8 @@ public class ContractResource {
         editContract.setDateSigned(contractRequest.getDateSigned());
         editContract.setDateExpiry(contractRequest.getDateExpiry());
         editContract.setContractValue(contractRequest.getContractValue());
-        editContract.setTenant(tenantService.findById(contractRequest.getTenantId()).get());
+        editContract.setTenant(tenantService.findById(contractRequest.getTenantId())
+                .orElseThrow(()-> new ResourceNotFoundException("Tenant not found")));
 
         Contract contractUpdate = contractService.save(editContract);
 

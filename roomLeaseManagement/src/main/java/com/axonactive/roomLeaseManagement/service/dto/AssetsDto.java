@@ -13,4 +13,5 @@ public class AssetsDto {
     private String quantity;
     private double price;
     private String status;
+    private int roomNumber;
 }

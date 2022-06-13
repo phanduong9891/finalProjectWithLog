@@ -21,7 +21,7 @@ public class ContractInfo {
     @Column(nullable = false)
     private double deposit;
     @NotNull
-    @Column(nullable = false, name = "electricity_price_per_Kw")
+    @Column(nullable = false, name = "electricity_price_per_Kw")//may need to change this name
     private double electricityPrice;
     @NotNull
     @Column(nullable = false)
@@ -30,6 +30,7 @@ public class ContractInfo {
     private int maximumGuest;
     @NotNull
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ContractType type;
 
     @JoinColumn
