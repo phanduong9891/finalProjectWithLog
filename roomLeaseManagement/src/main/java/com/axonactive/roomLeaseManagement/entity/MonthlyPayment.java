@@ -16,33 +16,37 @@ public class MonthlyPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotNull
-    @Column(nullable = false)
 
-    private YearMonth yearMonth;//may need to change name in the database
+
+
+    @Enumerated(EnumType.STRING)
+    private Month month;//may need to change name in the database
+
+    private String year;
 
     private double electricityBill;//this may need to change to calculation method
 
     @NotNull
     @Column(nullable = false)
-    private double waterBill;//this may need to check with contractInfo to make sure data integrity
+    private double waterBill;////need to check with waterPrice in contractInfo to make sure data integrity;
 
     @NotNull
     @Column(nullable = false)
-    private double rent;
+    private double rent;//need to check with rent in contractInfo to make sure data integrity;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, name = "paid")
     private boolean status;
 
-    @Column(nullable = false)
-    private LocalDate paidDay;
+    @Column
+    private LocalDate paidDay;//only have data when status is true
 
+    @Column
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
     @JoinColumn
     @ManyToOne
     private Contract contract;
-
 
 }

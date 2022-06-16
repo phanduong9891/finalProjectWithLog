@@ -1,8 +1,10 @@
 package com.axonactive.roomLeaseManagement.service;
 
 import com.axonactive.roomLeaseManagement.entity.Contract;
+import com.axonactive.roomLeaseManagement.entity.ContractType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ContractService {
@@ -10,4 +12,7 @@ public interface ContractService {
     Contract save(Contract contract);
     Optional<Contract> findById(Integer id);
     void deleteById(Integer id);
+    Optional<Contract> findByTenantPhoneNumber(String phoneNumber);
+    List<Contract> getContractFinishedInTwoMonths();
+
 }

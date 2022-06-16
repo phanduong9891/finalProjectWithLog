@@ -15,14 +15,15 @@ public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @NotNull
     @Column(nullable = false,name = "Signed_date")
     private LocalDate dateSigned;
-    @NotNull
-    @Column(nullable = false,name = "Expiry_date")
+
+    @Column(name = "Expiry_date")
     private LocalDate dateExpiry;
-    @NotNull
-    @Column(nullable = false, name = "Value")
+
+    @Column
     private double contractValue;
 
     @JoinColumn

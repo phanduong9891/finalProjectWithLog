@@ -11,6 +11,6 @@ import java.time.YearMonth;
 @NoArgsConstructor
 public class MonthlyServiceUsingDto {
     private double electricityUsage;
-    private YearMonth yearMonth;
+    private String time; //ki thanh toan': may need to change name and if change, change under mapper as well
     private int roomNumber;
 }

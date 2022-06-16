@@ -15,15 +15,12 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @Column(nullable = false,unique = true)
-
+    @Column(nullable = false, unique = true)
     private int roomNumber;
 
     private String roomType;//may need to change to enum
 
-    @NotNull
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 

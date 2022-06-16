@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.axonactive.roomLeaseManagement.entity.Month;
 import java.time.YearMonth;
 
 @Data
@@ -11,6 +12,7 @@ import java.time.YearMonth;
 @NoArgsConstructor
 public class MonthlyServiceUsingRequest {
     private double electricityUsage;
-    private YearMonth yearMonth;
+    private Month month;
+    private String year;
     private Integer contractInfoId;
 }

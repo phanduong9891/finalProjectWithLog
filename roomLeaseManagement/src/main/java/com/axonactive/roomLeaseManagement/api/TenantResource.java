@@ -29,10 +29,20 @@ public class TenantResource {
         return ResponseEntity.ok(TenantMapper.INSTANCE.toDtos(tenantList));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TenantDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
-        Tenant tenant = tenantService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+    //    @GetMapping("/{id}")
+//    public ResponseEntity<TenantDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+//        Tenant tenant = tenantService.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+//        return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));
+//    }
+    @GetMapping("/search")
+    public ResponseEntity<TenantDto> searchBy(@RequestParam(name = "phoneNumber",required = false)String phoneNumber, @RequestParam(name = "idCardNumber",required = false)String idCardNumber ) throws ResourceNotFoundException {
+        if(null == idCardNumber){
+        Tenant tenant = tenantService.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found with phone number: " + phoneNumber));
+        return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));}
+        Tenant tenant = tenantService.findByIdCardNumber(idCardNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found with id card number: " + idCardNumber));
         return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));
     }
 
@@ -71,7 +81,7 @@ public class TenantResource {
         editTenant.setPhoneNumber(tenantRequest.getPhoneNumber());
         editTenant.setIdCardNumber(tenantRequest.getIdCardNumber());
         editTenant.setBirthday(tenantRequest.getBirthday());
-        editTenant.setRelatives(relativesService.findById(tenantRequest.getRelativesId()).orElseThrow(()-> new org.springframework.data.rest.webmvc.ResourceNotFoundException("Relative not found")));
+        editTenant.setRelatives(relativesService.findById(tenantRequest.getRelativesId()).orElseThrow(() -> new org.springframework.data.rest.webmvc.ResourceNotFoundException("Relative not found")));
 
         Tenant tenantUpdate = tenantService.save(editTenant);
 

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,5 +35,15 @@ public class MonthlyPaymentServiceImpl implements MonthlyPaymentService {
     @Override
     public void deleteById(Integer id) {
         monthlyPaymentRepository.deleteById(id);
+    }
+
+    @Override
+    public List<MonthlyPayment> findByPaidDayBetween(LocalDate date1, LocalDate date2) {
+        return monthlyPaymentRepository.findByPaidDayBetween(date1,date2);
+    }
+
+    @Override
+    public Integer numberOfMonthlyPayment(LocalDate date1, LocalDate date2) {
+        return monthlyPaymentRepository.numberOfMonthlyPayment(date1,date2);
     }
 }

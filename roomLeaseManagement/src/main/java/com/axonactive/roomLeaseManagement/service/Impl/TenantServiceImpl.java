@@ -36,4 +36,14 @@ public class TenantServiceImpl implements TenantService {
         tenantRepository.deleteById(id);
 
     }
+
+    @Override
+    public Optional<Tenant> findByPhoneNumber(String phoneNumber) {
+        return tenantRepository.findByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public Optional<Tenant> findByIdCardNumber(String idCardNumber) {
+        return tenantRepository.findByIdCardNumber(idCardNumber);
+    }
 }

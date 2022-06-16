@@ -26,10 +26,11 @@ public class Tenant {
 
     private String gender;
 
+    @Column(unique = true)
     private String phoneNumber;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String idCardNumber;
 
     private LocalDate birthday;

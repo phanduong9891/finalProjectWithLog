@@ -14,8 +14,13 @@ public class MonthlyServiceUsing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private double electricityUsage;
-    private YearMonth yearMonth;//may need to change column name
+
+    @Enumerated(EnumType.STRING)
+    private Month month;
+
+    private String year;
 
     @JoinColumn
     @ManyToOne

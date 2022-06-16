@@ -2,6 +2,7 @@ package com.axonactive.roomLeaseManagement.api;
 
 
 
+import com.axonactive.roomLeaseManagement.entity.ContractInfo;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.MonthlyServiceUsingRequest;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,25 +30,32 @@ public class MonthlyServiceUsingResource {
     @GetMapping
     public ResponseEntity<List<MonthlyServiceUsingDto>> getAll() {
         List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.getAll();
-        return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toDtos(monthlyServiceUsingList));
+        return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toServiceUsingDtos(monthlyServiceUsingList));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MonthlyServiceUsingDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         MonthlyServiceUsing monthlyServiceUsing = monthlyServiceUsingService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
-        return ResponseEntity.ok().body(MonthlyServiceUsingMapper.INSTANCE.toDto(monthlyServiceUsing));
+        return ResponseEntity.ok().body(MonthlyServiceUsingMapper.INSTANCE.toServiceUsingDto(monthlyServiceUsing));
     }
 
     @PostMapping
     public ResponseEntity<MonthlyServiceUsingDto> create(@RequestBody MonthlyServiceUsingRequest monthlyServiceUsingRequest) throws ResourceNotFoundException {
+        ContractInfo requestedContractInfo =  contractInfoService.findById(monthlyServiceUsingRequest.getContractInfoId())
+                .orElseThrow(()-> new ResourceNotFoundException("ContractInfo not found"));
+
         MonthlyServiceUsing createMonthlyServiceUsing = monthlyServiceUsingService.save(
                 new MonthlyServiceUsing(null,
                         monthlyServiceUsingRequest.getElectricityUsage(),
-                        monthlyServiceUsingRequest.getYearMonth(),
-                        contractInfoService.findById(monthlyServiceUsingRequest.getContractInfoId()).orElseThrow(()-> new ResourceNotFoundException("ContractInfo not found")))
+                        monthlyServiceUsingRequest.getMonth(),
+                        monthlyServiceUsingRequest.getYear(),
+                        requestedContractInfo
+                        )
         );
-        return ResponseEntity.created(URI.create((MonthlyServiceUsingResource.PATH + "/" + createMonthlyServiceUsing.getId()))).body(MonthlyServiceUsingMapper.INSTANCE.toDto(createMonthlyServiceUsing));
+        return ResponseEntity
+                .created(URI.create((MonthlyServiceUsingResource.PATH + "/" + createMonthlyServiceUsing.getId())))
+                .body(MonthlyServiceUsingMapper.INSTANCE.toServiceUsingDto(createMonthlyServiceUsing));
     }
 
     @DeleteMapping("/{id}")
@@ -62,10 +71,13 @@ public class MonthlyServiceUsingResource {
         MonthlyServiceUsing editMonthlyServiceUsing = monthlyServiceUsingService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("MonthlyServiceUsing not found"));
         editMonthlyServiceUsing.setElectricityUsage(monthlyServiceUsingRequest.getElectricityUsage());
-        editMonthlyServiceUsing.setYearMonth(monthlyServiceUsingRequest.getYearMonth());
+        editMonthlyServiceUsing.setMonth(monthlyServiceUsingRequest.getMonth());
+        editMonthlyServiceUsing.setYear(monthlyServiceUsingRequest.getYear());
 
         MonthlyServiceUsing monthlyServiceUsingUpdate = monthlyServiceUsingService.save(editMonthlyServiceUsing);
 
-        return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toDto(monthlyServiceUsingUpdate));
+        return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toServiceUsingDto(monthlyServiceUsingUpdate));
     }
+
+
 }

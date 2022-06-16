@@ -16,15 +16,14 @@ public class PaymentUponTermination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @Column(nullable = false)
-    private LocalDate dayCreated;
 
-    @Column(nullable = false)
+    private LocalDate dayCreated;//thuong de localdate.now?
+
+    @Column
     private double damageFee;
 
-    @Column(nullable = false)
-    private double depositRefund;
+    @Column
+    private double depositRefund;//may need to check to not excel deposit set in contractInfo
 
     @JoinColumn
     @ManyToOne

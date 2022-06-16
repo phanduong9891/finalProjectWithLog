@@ -1,5 +1,6 @@
 package com.axonactive.roomLeaseManagement.api;
 
+import com.axonactive.roomLeaseManagement.entity.Contract;
 import com.axonactive.roomLeaseManagement.entity.PaymentUponTermination;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.PaymentUponTerminationRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(PaymentUponTerminationResource.PATH)
@@ -39,14 +41,22 @@ public class PaymentUponTerminationResource {
 
     @PostMapping
     public ResponseEntity<PaymentUponTerminationDto> create(@RequestBody PaymentUponTerminationRequest paymentUponTerminationRequest) throws ResourceNotFoundException {
-        PaymentUponTermination createPaymentUponTermination = paymentUponTerminationService.save(
-                new PaymentUponTermination(null,
-                        paymentUponTerminationRequest.getDayCreated(),
-                        paymentUponTerminationRequest.getDamageFee(),
-                        paymentUponTerminationRequest.getDepositRefund(),
-                        contractService.findById(paymentUponTerminationRequest.getContractId())
-                                .orElseThrow(()-> new ResourceNotFoundException("Contract not found"))
-                ));
+       Contract contract = contractService.findById(paymentUponTerminationRequest.getContractId()).orElseThrow(()-> new ResourceNotFoundException("Contract not found"));
+
+        PaymentUponTermination paymentUponTermination = new PaymentUponTermination();
+        paymentUponTermination.setDayCreated( paymentUponTerminationRequest.getDayCreated());
+        paymentUponTermination.setDamageFee( paymentUponTerminationRequest.getDamageFee());
+        paymentUponTermination.setDepositRefund( paymentUponTerminationRequest.getDepositRefund());
+        paymentUponTermination.setContract(contract);///nguyen phan set nay xuong service(if possible)
+//        new PaymentUponTermination(null,
+//                paymentUponTerminationRequest.getDayCreated(),
+//                paymentUponTerminationRequest.getDamageFee(),
+//                paymentUponTerminationRequest.getDepositRefund(),
+//                contractService.findById(paymentUponTerminationRequest.getContractId())
+//                        .orElseThrow(()-> new ResourceNotFoundException("Contract not found"))
+//        )
+        PaymentUponTermination createPaymentUponTermination = paymentUponTerminationService.save(paymentUponTermination);
+
         return ResponseEntity.created(URI.create((PaymentUponTerminationResource.PATH + "/" + createPaymentUponTermination.getId()))).body(PaymentUponTerminationMapper.INSTANCE.toDto(createPaymentUponTermination));
     }
 

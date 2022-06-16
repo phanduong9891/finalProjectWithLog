@@ -11,4 +11,6 @@ public interface TenantService {
     Tenant save(Tenant tenant);
     Optional<Tenant> findById(Integer id);
     void deleteById(Integer id);
+    Optional<Tenant> findByPhoneNumber(String phoneNumber);
+    Optional<Tenant> findByIdCardNumber(String idCardNumber);
 }

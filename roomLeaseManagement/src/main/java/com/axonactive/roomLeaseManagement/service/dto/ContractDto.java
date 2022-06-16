@@ -17,7 +17,6 @@ public class ContractDto {
     private String lastName;
     private String phoneNumber;
     private String idCardNumber;
-    private LocalDate birthday;
     private String relativeFirstName;
     private String relativeRelationship;
     private String relativePhoneNumber;

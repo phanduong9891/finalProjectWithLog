@@ -1,5 +1,5 @@
 package com.axonactive.roomLeaseManagement.entity;
 
 public enum ContractType {
-    MONTHLY, LONGTERM
+    MONTHLY, FIXEDTERM
 }
