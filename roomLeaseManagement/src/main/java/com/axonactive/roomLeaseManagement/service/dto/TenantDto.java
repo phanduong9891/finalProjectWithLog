@@ -11,8 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TenantDto {
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String gender;
     private String phoneNumber;
     private String idCardNumber;

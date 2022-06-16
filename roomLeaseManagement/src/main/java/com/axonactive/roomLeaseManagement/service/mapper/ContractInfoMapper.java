@@ -14,6 +14,10 @@ public interface ContractInfoMapper {
 
     @Mapping(source = "room.roomNumber",target = "roomNumber")
     @Mapping(source = "room.roomType",target = "roomType")
+    @Mapping(target = "tenantFullName",expression = "java(contractInfo.getContract().getTenant().getLastName() + \" \" + " +
+            "contractInfo.getContract().getTenant().getFirstName())")
+    @Mapping(source = "contract.tenant.idCardNumber",target = "tenantIdCardNumber")
     ContractInfoDto toDto(ContractInfo contractInfo);
     List<ContractInfoDto> toDtos(List<ContractInfo> ContractInfo);
+
 }

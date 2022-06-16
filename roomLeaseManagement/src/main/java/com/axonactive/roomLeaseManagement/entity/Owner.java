@@ -14,13 +14,18 @@ public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @NotNull
     @Column(nullable = false)
     private String firstName;
+
     private String lastName;
+
     @NotNull
     @Column(nullable = false)
-    private String phoneNumber;
+    private String phoneNumber;//may need add length for column
+
     private String email;
+
     private String gender;
 }

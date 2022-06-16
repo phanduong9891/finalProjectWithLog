@@ -12,7 +12,7 @@ import java.time.YearMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonthlyPaymentDto {
-    private YearMonth month;
+    private String time;
     private double electricityBill;
     private double waterBill;
     private double rent;

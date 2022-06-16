@@ -14,20 +14,26 @@ public class ContractInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @NotNull
     @Column(nullable = false)
     private double rent;
+
     @NotNull
     @Column(nullable = false)
     private double deposit;
+
     @NotNull
     @Column(nullable = false, name = "electricity_price_per_Kw")//may need to change this name
     private double electricityPrice;
+
     @NotNull
     @Column(nullable = false)
     private double waterPrice;
+
     @NotNull
     private int maximumGuest;
+
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

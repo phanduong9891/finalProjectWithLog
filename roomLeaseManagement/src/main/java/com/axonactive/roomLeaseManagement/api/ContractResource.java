@@ -32,10 +32,17 @@ public class ContractResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContractDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
-        Contract contract = contractService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id not found: " + id));
-        return ResponseEntity.ok().body(ContractMapper.INSTANCE.toDto(contract));
+    public ResponseEntity<ContractDto> getById(@PathVariable(value = "id") Integer id, @RequestParam(name = "phoneNumber", required = false) String phoneNumber) throws ResourceNotFoundException {
+        if (null == phoneNumber) {
+            return ResponseEntity.ok(ContractMapper.INSTANCE.toDto(contractService.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Contract not found: " + id))));
+        }
+        return ResponseEntity.ok(ContractMapper.INSTANCE.toDto(contractService.findByTenantPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Contract not found: " + phoneNumber))));
+    }
+    @GetMapping("/a")
+    public ResponseEntity<List<ContractDto>> getAboutExpiredContract(){
+        return ResponseEntity.ok(ContractMapper.INSTANCE.toDtos(contractService.getContractFinishedInTwoMonths()));
     }
 
     @PostMapping
@@ -46,7 +53,7 @@ public class ContractResource {
                         contractRequest.getDateExpiry(),
                         contractRequest.getContractValue(),
                         tenantService.findById(contractRequest.getTenantId())
-                                .orElseThrow(()-> new ResourceNotFoundException("Tenant not found")))
+                                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found")))
         );
         return ResponseEntity.created(URI.create((ContractResource.PATH + "/" + createContract.getId()))).body(ContractMapper.INSTANCE.toDto(createContract));
     }
@@ -67,7 +74,7 @@ public class ContractResource {
         editContract.setDateExpiry(contractRequest.getDateExpiry());
         editContract.setContractValue(contractRequest.getContractValue());
         editContract.setTenant(tenantService.findById(contractRequest.getTenantId())
-                .orElseThrow(()-> new ResourceNotFoundException("Tenant not found")));
+                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found")));
 
         Contract contractUpdate = contractService.save(editContract);
 

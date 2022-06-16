@@ -16,5 +16,7 @@ public class ContractInfoDto {
     private ContractType type;
     private int roomNumber;
     private String roomType; //may need to change to enum
+    private String tenantFullName;
+    private String tenantIdCardNumber;
 
 }
