@@ -1,6 +1,8 @@
 package com.axonactive.roomLeaseManagement.service.Impl;
 
+import com.axonactive.roomLeaseManagement.entity.Month;
 import com.axonactive.roomLeaseManagement.entity.MonthlyPayment;
+import com.axonactive.roomLeaseManagement.entity.PaymentMethod;
 import com.axonactive.roomLeaseManagement.repository.MonthlyPaymentRepository;
 import com.axonactive.roomLeaseManagement.service.MonthlyPaymentService;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,39 @@ public class MonthlyPaymentServiceImpl implements MonthlyPaymentService {
     }
 
     @Override
-    public Integer numberOfMonthlyPayment(LocalDate date1, LocalDate date2) {
-        return monthlyPaymentRepository.numberOfMonthlyPayment(date1,date2);
+    public Integer numberOfMonthlyPayment(Month month, String year) {
+        return monthlyPaymentRepository.numberOfMonthlyPayment(month,year);
     }
+
+    @Override
+    public double totalElectricityBill(LocalDate date1, LocalDate date2) {
+        return monthlyPaymentRepository.totalElectricityBill(date1,date2);
+    }
+
+    @Override
+    public double totalWaterBill(LocalDate date1, LocalDate date2) {
+        return monthlyPaymentRepository.totalWaterBill(date1,date2);
+    }
+
+    @Override
+    public double totalRent(LocalDate date1, LocalDate date2) {
+        return monthlyPaymentRepository.totalRent(date1,date2);
+    }
+
+    @Override
+    public double totalRevenue(LocalDate date1, LocalDate date2) {
+        return monthlyPaymentRepository.totalRevenue(date1,date2);
+    }
+
+    @Override
+    public List<MonthlyPayment> findByStatus(Boolean status) {
+        return monthlyPaymentRepository.findByStatus(status);
+    }
+
+    @Override
+    public Integer numberOfPayThroughMethod(LocalDate date1, LocalDate date2, PaymentMethod paymentMethod) {
+        return monthlyPaymentRepository.numberOfPayThroughMethod(date1,date2,paymentMethod);
+    }
+
+
 }

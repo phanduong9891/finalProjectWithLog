@@ -1,5 +1,6 @@
 package com.axonactive.roomLeaseManagement.service;
 
+import com.axonactive.roomLeaseManagement.entity.Month;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
 
 import java.util.List;
@@ -10,4 +11,6 @@ public interface MonthlyServiceUsingService {
     MonthlyServiceUsing save(MonthlyServiceUsing monthlyServiceUsing);
     Optional<MonthlyServiceUsing> findById(Integer id);
     void deleteById(Integer id);
+    Optional<List<MonthlyServiceUsing>> findByMonth(Month month);
+
 }

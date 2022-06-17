@@ -6,13 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonthlyPaymentDto {
-    private String time;
+    private String paymentPeriod;
     private double electricityBill;
     private double waterBill;
     private double rent;

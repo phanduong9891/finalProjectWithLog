@@ -3,11 +3,13 @@ package com.axonactive.roomLeaseManagement.api;
 
 
 import com.axonactive.roomLeaseManagement.entity.ContractInfo;
+import com.axonactive.roomLeaseManagement.entity.Month;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.MonthlyServiceUsingRequest;
 import com.axonactive.roomLeaseManagement.service.ContractInfoService;
 import com.axonactive.roomLeaseManagement.service.Impl.MonthlyServiceUsingServiceImpl;
+import com.axonactive.roomLeaseManagement.service.dto.MonthlyMoneyCollectedDto;
 import com.axonactive.roomLeaseManagement.service.dto.MonthlyServiceUsingDto;
 import com.axonactive.roomLeaseManagement.service.mapper.MonthlyServiceUsingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -38,6 +39,16 @@ public class MonthlyServiceUsingResource {
         MonthlyServiceUsing monthlyServiceUsing = monthlyServiceUsingService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
         return ResponseEntity.ok().body(MonthlyServiceUsingMapper.INSTANCE.toServiceUsingDto(monthlyServiceUsing));
+    }
+
+    @GetMapping("/moneyCollected")
+    public ResponseEntity<List<MonthlyMoneyCollectedDto>> getMoneyCollectd(@RequestParam(name = "month",required = false)String month) throws ResourceNotFoundException {
+        if(month != null){
+        List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.findByMonth(Month.valueOf(month.toUpperCase()))
+                .orElseThrow(() -> new ResourceNotFoundException("Cant find this month: " + month));
+        return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toMoneyCollectedDtos(monthlyServiceUsingList));}
+        List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.getAll();
+        return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toMoneyCollectedDtos(monthlyServiceUsingList));
     }
 
     @PostMapping

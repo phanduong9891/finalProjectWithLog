@@ -4,6 +4,7 @@ import com.axonactive.roomLeaseManagement.entity.Room;
 import com.axonactive.roomLeaseManagement.request.RoomRequest;
 import com.axonactive.roomLeaseManagement.service.Impl.OwnerServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.RoomServiceImpl;
+import com.axonactive.roomLeaseManagement.service.dto.RoomByStatusDto;
 import com.axonactive.roomLeaseManagement.service.dto.RoomDto;
 import com.axonactive.roomLeaseManagement.service.mapper.RoomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,19 @@ public class RoomResource {
                 .orElseThrow(() -> new ResourceNotFoundException("Id not found" + id));
         return ResponseEntity.ok(RoomMapper.INSTANCE.toDto(room));
     }
+    @GetMapping("/find")
+    public ResponseEntity<RoomDto> findRoom(@RequestParam(name = "roomNumber",required = false) Integer roomNumber){
+        if(roomNumber == null)
+            return ResponseEntity.noContent().build();
+        Room room = roomService.findByRoomNumber(roomNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Cant find room number: " + roomNumber));
+        return ResponseEntity.ok(RoomMapper.INSTANCE.toDto(room));
+    }
+
+    @GetMapping("/roomCondition")
+    public RoomByStatusDto getNumberOfRoomByStatus(){
+        return roomService.numberOfRoomByStatus();
+    }
 
     @PostMapping
     public ResponseEntity<RoomDto> create(@RequestBody RoomRequest roomRequest) throws ResourceNotFoundException {
@@ -50,6 +64,7 @@ public class RoomResource {
         return ResponseEntity.created(URI.create(RoomResource.PATH + "/" + createRoom.getId())).body(RoomMapper.INSTANCE.toDto(createRoom));
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<RoomDto> update(@PathVariable(value = "id") Integer id, @RequestBody RoomRequest roomRequest) throws ResourceNotFoundException {
         Room editRoom = roomService.findById(id)
@@ -64,6 +79,7 @@ public class RoomResource {
 
         return ResponseEntity.ok(RoomMapper.INSTANCE.toDto(roomUpdate));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
