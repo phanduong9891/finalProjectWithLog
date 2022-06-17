@@ -15,7 +15,7 @@ public interface MonthlyPaymentMapper {
 
     MonthlyPaymentMapper INSTANCE = Mappers.getMapper(MonthlyPaymentMapper.class);
 
-    @Mapping(target = "time", expression = "java(monthlyPayment.getMonth() + \" \" + monthlyPayment.getYear())")
+    @Mapping(target = "paymentPeriod", expression = "java(monthlyPayment.getMonth() + \" \" + monthlyPayment.getYear())")
     @Mapping(source = "contract.tenant.firstName", target = "tenantFirstName")
     @Mapping(source = "contract.tenant.lastName", target = "tenantLastName")
     MonthlyPaymentDto toDto(MonthlyPayment monthlyPayment);

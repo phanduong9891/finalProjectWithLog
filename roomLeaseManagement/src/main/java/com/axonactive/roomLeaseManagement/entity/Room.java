@@ -18,7 +18,7 @@ public class Room {
     @Column(nullable = false, unique = true)
     private int roomNumber;
 
-    private String roomType;//may need to change to enum
+    private String roomType;
 
     @Column
     @Enumerated(EnumType.STRING)

@@ -3,10 +3,12 @@ package com.axonactive.roomLeaseManagement.api;
 
 import com.axonactive.roomLeaseManagement.entity.MonthlyPayment;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
+import com.axonactive.roomLeaseManagement.entity.PaymentMethod;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.MonthlyPaymentRequest;
 import com.axonactive.roomLeaseManagement.service.Impl.ContractServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.MonthlyPaymentServiceImpl;
+import com.axonactive.roomLeaseManagement.service.dto.BusinessReportDto;
 import com.axonactive.roomLeaseManagement.service.dto.MonthlyPaymentDto;
 import com.axonactive.roomLeaseManagement.service.dto.MonthlyServiceUsingDto;
 import com.axonactive.roomLeaseManagement.service.mapper.MonthlyPaymentMapper;
@@ -37,8 +39,8 @@ public class MonthlyPaymentResource {
             List<MonthlyPayment> monthlyPaymentList = monthlyPaymentService.findByPaidDayBetween(LocalDate.parse(date1),LocalDate.parse(date2));
             return ResponseEntity.ok(MonthlyPaymentMapper.INSTANCE.toDtos(monthlyPaymentList));
         }
-
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<MonthlyPaymentDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
@@ -46,6 +48,27 @@ public class MonthlyPaymentResource {
                 .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
         return ResponseEntity.ok().body(MonthlyPaymentMapper.INSTANCE.toDto(monthlyPayment));
     }
+
+    @GetMapping("/showReport")
+    public ResponseEntity<BusinessReportDto> showReport(@RequestParam(name = "date1")String date1, @RequestParam(name = "date2")String date2){
+        return ResponseEntity.ok(new BusinessReportDto(
+                monthlyPaymentService.totalElectricityBill(LocalDate.parse(date1),LocalDate.parse(date2)),
+                monthlyPaymentService.totalWaterBill(LocalDate.parse(date1),LocalDate.parse(date2)),
+                monthlyPaymentService.totalRent(LocalDate.parse(date1),LocalDate.parse(date2)),
+                monthlyPaymentService.totalRevenue(LocalDate.parse(date1),LocalDate.parse(date2)),
+                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1),LocalDate.parse(date2), PaymentMethod.CASH),
+                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1),LocalDate.parse(date2),PaymentMethod.CARD))
+        );
+    }
+
+    @GetMapping("/Unpaid")
+    public ResponseEntity <List<MonthlyPaymentDto>> getUnpaid(){
+        List<MonthlyPayment> monthlyPayment = monthlyPaymentService.findByStatus(false);
+        if(monthlyPayment.size() ==0)
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(MonthlyPaymentMapper.INSTANCE.toDtos(monthlyPayment));
+    }
+
 
     @PostMapping
     public ResponseEntity<MonthlyPaymentDto> create(@RequestBody MonthlyPaymentRequest monthlyPaymentRequest) throws ResourceNotFoundException {

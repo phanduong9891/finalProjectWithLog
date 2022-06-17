@@ -1,5 +1,6 @@
 package com.axonactive.roomLeaseManagement.service.Impl;
 
+import com.axonactive.roomLeaseManagement.entity.Month;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
 import com.axonactive.roomLeaseManagement.repository.MonthlyServiceUsingRepository;
 import com.axonactive.roomLeaseManagement.service.MonthlyServiceUsingService;
@@ -35,4 +36,11 @@ public class MonthlyServiceUsingServiceImpl implements MonthlyServiceUsingServic
     public void deleteById(Integer id) {
         monthlyServiceUsingRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<List<MonthlyServiceUsing>> findByMonth(Month month) {
+        return monthlyServiceUsingRepository.findByMonth(month);
+    }
+
+
 }
