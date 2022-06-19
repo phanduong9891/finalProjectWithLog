@@ -1,6 +1,7 @@
 package com.axonactive.roomLeaseManagement.entity;
 
 import lombok.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 @Setter
+@PreAuthorize("hasRole('ADMIN')")
 public class Relatives {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
