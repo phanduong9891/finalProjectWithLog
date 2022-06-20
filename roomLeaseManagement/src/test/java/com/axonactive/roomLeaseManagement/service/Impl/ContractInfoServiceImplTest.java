@@ -10,8 +10,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
-class ContractInfoServiceImplTest {
+class ContractDealServiceImplTest {
 @Autowired
-ContractInfoServiceImpl contractInfoService;
+ContractDealServiceImpl contractDealService;
 
+    @Test
+    void findByContractTenantPhoneNumber() {
+        assertEquals(0,contractDealService.findByContractTenantPhoneNumber("0913245671"));
+    }
 }

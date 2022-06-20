@@ -40,7 +40,7 @@ public class ContractResource {
         return ResponseEntity.ok(ContractMapper.INSTANCE.toDto(contractService.findByTenantPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Contract not found: " + phoneNumber))));
     }
-    @GetMapping("/a")
+    @GetMapping("/aboutExpiredContract")
     public ResponseEntity<List<ContractDto>> getAboutExpiredContract(){
         return ResponseEntity.ok(ContractMapper.INSTANCE.toDtos(contractService.getContractFinishedInTwoMonths()));
     }

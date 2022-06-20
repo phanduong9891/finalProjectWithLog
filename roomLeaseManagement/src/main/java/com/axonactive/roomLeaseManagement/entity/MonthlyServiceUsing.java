@@ -26,5 +26,5 @@ public class MonthlyServiceUsing {
 
     @JoinColumn
     @ManyToOne
-    private ContractInfo contractInfo;
+    private ContractDeal contractDeal;
 }

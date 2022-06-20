@@ -30,11 +30,11 @@ public class MonthlyPayment {
 
     @NotNull
     @Column(nullable = false)
-    private double waterBill;////need to check with waterPrice in contractInfo to make sure data integrity;
+    private double waterBill;////need to check with waterPrice in contractDeal to make sure data integrity;
 
     @NotNull
     @Column(nullable = false)
-    private double rent;//need to check with rent in contractInfo to make sure data integrity;
+    private double rent;//need to check with rent in contractDeal to make sure data integrity;
 
     @NotNull
     @Column(nullable = false, name = "paid")

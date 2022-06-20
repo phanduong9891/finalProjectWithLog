@@ -14,4 +14,18 @@ public class ExceptionList {
     public static ResponseException internalServerError(String messageKey, String message) {
         return new ResponseException(messageKey, message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    private static final String ASSET_NOT_FOUND_MSG_KEY = "AssetNotExisted";
+    private static final String ASSET_NOT_FOUND_MSG = "Asset Not Found";
+
+    public static ResponseException AssetNotFound() {
+        return notFound(ASSET_NOT_FOUND_MSG_KEY, ASSET_NOT_FOUND_MSG);
+    }
+
+//    private static final String CONTRACTINFO_NOT_FOUND_MSG_KEY = "Contract infoNotExisted";
+//    private static final String ASSET_NOT_FOUND_MSG = "Asset Not Found";
+//
+//    public static ResponseException AssetNotFound() {
+//        return notFound(ASSET_NOT_FOUND_MSG_KEY, ASSET_NOT_FOUND_MSG);
+//    }
 }

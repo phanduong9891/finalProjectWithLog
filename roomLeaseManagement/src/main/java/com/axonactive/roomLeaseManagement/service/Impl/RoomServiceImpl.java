@@ -51,4 +51,9 @@ public class RoomServiceImpl implements RoomService {
     public Optional<Room> findByRoomNumber(int roomNumber) {
         return roomRepository.findByRoomNumber(roomNumber);
     }
+
+    @Override
+    public List<Room> showRoomByStatus(RoomStatus status) {
+        return roomRepository.findByStatus(status);
+    }
 }
