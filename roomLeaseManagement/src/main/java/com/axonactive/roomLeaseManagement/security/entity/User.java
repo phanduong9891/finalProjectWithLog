@@ -1,7 +1,7 @@
 package com.axonactive.roomLeaseManagement.security.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jdk.jfr.Enabled;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +9,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Enabled
-@Table(name = "user")
+@Entity
+@Table(name = "users")
 @NoArgsConstructor
 @Data
 public class User {
@@ -28,4 +28,13 @@ public class User {
 
     @OneToMany(mappedBy = "users")
     private List<UserRoleAssignment> roles = new ArrayList<>();
+
+    public List<UserRoleAssignment> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<UserRoleAssignment> roles) {
+        this.roles = roles;
+    }
+
 }

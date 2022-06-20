@@ -25,7 +25,7 @@ public class PaymentUponTermination {
     private double damageFee;
 
     @Column
-    private double depositRefund;//may need to check to not excel deposit set in contractInfo
+    private double depositRefund;//may need to check to not excel deposit set in contractDeal
 
     @JoinColumn
     @ManyToOne

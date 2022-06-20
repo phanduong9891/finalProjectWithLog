@@ -41,7 +41,8 @@ public class PaymentUponTerminationResource {
 
     @PostMapping
     public ResponseEntity<PaymentUponTerminationDto> create(@RequestBody PaymentUponTerminationRequest paymentUponTerminationRequest) throws ResourceNotFoundException {
-       Contract contract = contractService.findById(paymentUponTerminationRequest.getContractId()).orElseThrow(()-> new ResourceNotFoundException("Contract not found"));
+       Contract contract = contractService.findById(paymentUponTerminationRequest.getContractId()).
+               orElseThrow(()-> new ResourceNotFoundException("Contract not found"));
 
         PaymentUponTermination paymentUponTermination = new PaymentUponTermination();
         paymentUponTermination.setDayCreated( paymentUponTerminationRequest.getDayCreated());

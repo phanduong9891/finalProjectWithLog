@@ -1,6 +1,9 @@
 package com.axonactive.roomLeaseManagement.api;
 
 import com.axonactive.roomLeaseManagement.entity.Room;
+import com.axonactive.roomLeaseManagement.entity.RoomStatus;
+import com.axonactive.roomLeaseManagement.exception.ExceptionList;
+import com.axonactive.roomLeaseManagement.exception.ResponseException;
 import com.axonactive.roomLeaseManagement.request.RoomRequest;
 import com.axonactive.roomLeaseManagement.service.Impl.OwnerServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.RoomServiceImpl;
@@ -49,6 +52,13 @@ public class RoomResource {
     public RoomByStatusDto getNumberOfRoomByStatus(){
         return roomService.numberOfRoomByStatus();
     }
+
+//nhap status sai thi xu sao?
+    @GetMapping("/roomStatus/{status}")
+    public ResponseEntity<List<RoomDto>> findRoomByStatus(@PathVariable(value = "status")RoomStatus status){
+        List<Room> roomList = roomService.showRoomByStatus(status);
+        return ResponseEntity.ok(RoomMapper.INSTANCE.toDtos(roomList));}
+
 
     @PostMapping
     public ResponseEntity<RoomDto> create(@RequestBody RoomRequest roomRequest) throws ResourceNotFoundException {

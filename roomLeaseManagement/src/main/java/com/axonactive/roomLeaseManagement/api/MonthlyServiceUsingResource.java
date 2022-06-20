@@ -2,12 +2,12 @@ package com.axonactive.roomLeaseManagement.api;
 
 
 
-import com.axonactive.roomLeaseManagement.entity.ContractInfo;
+import com.axonactive.roomLeaseManagement.entity.ContractDeal;
 import com.axonactive.roomLeaseManagement.entity.Month;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.MonthlyServiceUsingRequest;
-import com.axonactive.roomLeaseManagement.service.ContractInfoService;
+import com.axonactive.roomLeaseManagement.service.ContractDealService;
 import com.axonactive.roomLeaseManagement.service.Impl.MonthlyServiceUsingServiceImpl;
 import com.axonactive.roomLeaseManagement.service.dto.MonthlyMoneyCollectedDto;
 import com.axonactive.roomLeaseManagement.service.dto.MonthlyServiceUsingDto;
@@ -26,7 +26,7 @@ public class MonthlyServiceUsingResource {
     @Autowired
     private MonthlyServiceUsingServiceImpl monthlyServiceUsingService;
     @Autowired
-    private ContractInfoService contractInfoService;
+    private ContractDealService contractDealService;
 
     @GetMapping
     public ResponseEntity<List<MonthlyServiceUsingDto>> getAll() {
@@ -53,15 +53,15 @@ public class MonthlyServiceUsingResource {
 
     @PostMapping
     public ResponseEntity<MonthlyServiceUsingDto> create(@RequestBody MonthlyServiceUsingRequest monthlyServiceUsingRequest) throws ResourceNotFoundException {
-        ContractInfo requestedContractInfo =  contractInfoService.findById(monthlyServiceUsingRequest.getContractInfoId())
-                .orElseThrow(()-> new ResourceNotFoundException("ContractInfo not found"));
+        ContractDeal requestedContractDeal =  contractDealService.findById(monthlyServiceUsingRequest.getContractDealId())
+                .orElseThrow(()-> new ResourceNotFoundException("ContractDeal not found"));
 
         MonthlyServiceUsing createMonthlyServiceUsing = monthlyServiceUsingService.save(
                 new MonthlyServiceUsing(null,
                         monthlyServiceUsingRequest.getElectricityUsage(),
                         monthlyServiceUsingRequest.getMonth(),
                         monthlyServiceUsingRequest.getYear(),
-                        requestedContractInfo
+                        requestedContractDeal
                         )
         );
         return ResponseEntity

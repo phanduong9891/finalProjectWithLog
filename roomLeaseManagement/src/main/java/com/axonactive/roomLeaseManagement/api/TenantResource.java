@@ -6,6 +6,7 @@ import com.axonactive.roomLeaseManagement.request.TenantRequest;
 import com.axonactive.roomLeaseManagement.service.Impl.RelativesServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.TenantServiceImpl;
 import com.axonactive.roomLeaseManagement.service.dto.TenantDto;
+import com.axonactive.roomLeaseManagement.service.dto.TenantMonthsRentDto;
 import com.axonactive.roomLeaseManagement.service.mapper.TenantMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,6 @@ public class TenantResource {
         return ResponseEntity.ok(TenantMapper.INSTANCE.toDtos(tenantList));
     }
 
-    //    @GetMapping("/{id}")
-//    public ResponseEntity<TenantDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
-//        Tenant tenant = tenantService.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
-//        return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));
-//    }
     @GetMapping("/search")
     public ResponseEntity<TenantDto> searchBy(@RequestParam(name = "phoneNumber",required = false)String phoneNumber, @RequestParam(name = "idCardNumber",required = false)String idCardNumber ) throws ResourceNotFoundException {
         if(null == idCardNumber){
@@ -44,6 +39,11 @@ public class TenantResource {
         Tenant tenant = tenantService.findByIdCardNumber(idCardNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Tenant not found with id card number: " + idCardNumber));
         return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));
+    }
+
+    @GetMapping("/tenantMonthRented")
+    public ResponseEntity<List<TenantMonthsRentDto>> getTenantMonthRented(){
+        return ResponseEntity.ok(tenantService.tenantMonthRent());
     }
 
     @PostMapping

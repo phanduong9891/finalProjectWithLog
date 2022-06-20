@@ -17,7 +17,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAll(final ResponseException e, final WebRequest request){
         logger.error("error",e);
 
-        return new ResponseEntity<>(e.getResponseBody(),new HttpHeaders(), e.getResponseBody());
+        return new ResponseEntity<>(e.getResponseBody(),new HttpHeaders(),e.getResponseBody().getHttpStatus());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

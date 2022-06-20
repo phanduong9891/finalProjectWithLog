@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-//chua test lai
+//chua test lai- chuc nang chinh test roi
 @RestController
 @RequestMapping(MonthlyPaymentResource.PATH)
 public class MonthlyPaymentResource {

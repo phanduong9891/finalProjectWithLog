@@ -3,6 +3,7 @@ package com.axonactive.roomLeaseManagement.service.Impl;
 import com.axonactive.roomLeaseManagement.entity.Tenant;
 import com.axonactive.roomLeaseManagement.repository.TenantRepository;
 import com.axonactive.roomLeaseManagement.service.TenantService;
+import com.axonactive.roomLeaseManagement.service.dto.TenantMonthsRentDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,4 +47,11 @@ public class TenantServiceImpl implements TenantService {
     public Optional<Tenant> findByIdCardNumber(String idCardNumber) {
         return tenantRepository.findByIdCardNumber(idCardNumber);
     }
+
+    @Override
+    public List<TenantMonthsRentDto> tenantMonthRent() {
+        return tenantRepository.tenantMonthRent();
+    }
+
+
 }

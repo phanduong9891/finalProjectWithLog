@@ -1,6 +1,7 @@
 package com.axonactive.roomLeaseManagement.service;
 
 import com.axonactive.roomLeaseManagement.entity.Room;
+import com.axonactive.roomLeaseManagement.entity.RoomStatus;
 import com.axonactive.roomLeaseManagement.service.dto.RoomByStatusDto;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface RoomService {
 
     RoomByStatusDto numberOfRoomByStatus();
     Optional<Room> findByRoomNumber(int roomNumber);
+    List<Room> showRoomByStatus(RoomStatus status);
 }

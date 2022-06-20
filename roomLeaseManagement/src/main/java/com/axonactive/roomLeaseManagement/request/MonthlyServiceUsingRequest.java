@@ -14,5 +14,5 @@ public class MonthlyServiceUsingRequest {
     private double electricityUsage;
     private Month month;
     private String year;
-    private Integer contractInfoId;
+    private Integer contractDealId;
 }

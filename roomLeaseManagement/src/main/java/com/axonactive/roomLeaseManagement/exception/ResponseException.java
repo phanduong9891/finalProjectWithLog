@@ -6,16 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @NoArgsConstructor
-public class ResponseException extends RuntimeException{
+public class ResponseException extends RuntimeException {
 
     @Getter
     private ResponseBody responseBody;
 
-    public ResponseException(String messageKey, String message, HttpStatus httpStatus){
-        this.responseBody = new ResponseBody(messageKey,message,httpStatus);
+    public ResponseException(String messageKey, String message, HttpStatus httpStatus) {
+        this.responseBody = new ResponseBody(messageKey, message, httpStatus);
     }
 
-    public static class ResponseBody{
+    @Getter
+    public static class ResponseBody {
         private String messageKey;
         private String message;
         private HttpStatus httpStatus;

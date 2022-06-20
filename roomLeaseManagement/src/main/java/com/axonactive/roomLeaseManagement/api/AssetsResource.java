@@ -1,6 +1,7 @@
 package com.axonactive.roomLeaseManagement.api;
 
 import com.axonactive.roomLeaseManagement.entity.Assets;
+import com.axonactive.roomLeaseManagement.exception.ExceptionList;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.AssetsRequest;
 import com.axonactive.roomLeaseManagement.service.Impl.AssetsServiceImpl;
@@ -9,11 +10,12 @@ import com.axonactive.roomLeaseManagement.service.dto.AssetsDto;
 import com.axonactive.roomLeaseManagement.service.mapper.AssetsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-
+@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping(AssetsResource.PATH)
 public class AssetsResource {
@@ -32,7 +34,7 @@ public class AssetsResource {
     @GetMapping("/{id}")
     public ResponseEntity<AssetsDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Assets assets = assetsService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+                .orElseThrow(() -> ExceptionList.notFound("notFound", "Id not existed"));
         return ResponseEntity.ok().body(AssetsMapper.INSTANCE.toDto(assets));
     }
 

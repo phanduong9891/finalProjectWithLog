@@ -1,7 +1,7 @@
 package com.axonactive.roomLeaseManagement.service;
 
-import com.axonactive.roomLeaseManagement.entity.Room;
 import com.axonactive.roomLeaseManagement.entity.Tenant;
+import com.axonactive.roomLeaseManagement.service.dto.TenantMonthsRentDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +13,5 @@ public interface TenantService {
     void deleteById(Integer id);
     Optional<Tenant> findByPhoneNumber(String phoneNumber);
     Optional<Tenant> findByIdCardNumber(String idCardNumber);
+    List<TenantMonthsRentDto> tenantMonthRent();
 }
