@@ -70,8 +70,8 @@ public class MonthlyPaymentServiceImpl implements MonthlyPaymentService {
     }
 
     @Override
-    public List<MonthlyPayment> findByStatus(Boolean status) {
-        return monthlyPaymentRepository.findByStatus(status);
+    public List<MonthlyPayment> findByPaid(Boolean status) {
+        return monthlyPaymentRepository.findByPaid(status);
     }
 
     @Override

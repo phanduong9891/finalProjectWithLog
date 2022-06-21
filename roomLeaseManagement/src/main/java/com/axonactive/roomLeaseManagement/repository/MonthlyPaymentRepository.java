@@ -37,10 +37,10 @@ public interface MonthlyPaymentRepository extends JpaRepository<MonthlyPayment, 
 
     @Query("SELECT COUNT(m.id) FROM MonthlyPayment m " +
             "WHERE (m.paidDay BETWEEN ?1 AND ?2) " +
-            "AND m.paymentMethod = ?3 AND m.status = true")
+            "AND m.paymentMethod = ?3 AND m.paid = true")
     Integer numberOfPayThroughMethod(LocalDate date1, LocalDate date2, PaymentMethod paymentMethod);
 
-    List<MonthlyPayment> findByStatus(Boolean status);
+    List<MonthlyPayment> findByPaid(Boolean status);
 
 
 }

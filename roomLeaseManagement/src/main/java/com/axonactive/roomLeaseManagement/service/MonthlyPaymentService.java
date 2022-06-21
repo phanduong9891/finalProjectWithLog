@@ -19,7 +19,7 @@ public interface MonthlyPaymentService {
     double totalWaterBill(LocalDate date1, LocalDate date2);
     double totalRent(LocalDate date1, LocalDate date2);
     double totalRevenue(LocalDate date1, LocalDate date2);
-    List<MonthlyPayment> findByStatus(Boolean status);
+    List<MonthlyPayment> findByPaid(Boolean status);
     Integer numberOfPayThroughMethod(LocalDate date1, LocalDate date2, PaymentMethod paymentMethod);
 
 }

@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.YearMonth;
 
 @Entity
 @NoArgsConstructor
@@ -38,7 +37,7 @@ public class MonthlyPayment {
 
     @NotNull
     @Column(nullable = false, name = "paid")
-    private boolean status;
+    private boolean paid;
 
     @Column
     private LocalDate paidDay;//only have data when status is true
@@ -50,5 +49,11 @@ public class MonthlyPayment {
     @JoinColumn
     @ManyToOne
     private Contract contract;
-
+//
+//    public LocalDate getPaidDay() {
+//        if (!paid){
+//            return null;
+//        }
+//        return paidDay;
+//    }
 }

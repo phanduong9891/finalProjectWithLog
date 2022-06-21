@@ -43,4 +43,9 @@ public class ContractDealServiceImpl implements ContractDealService {
         return contractDealRepository.findByContractTenantPhoneNumber(phoneNumber);
     }
 
+    @Override
+    public Optional<ContractDeal> findByContractId(Integer id) {
+        return contractDealRepository.findByContractId(id);
+    }
+
 }

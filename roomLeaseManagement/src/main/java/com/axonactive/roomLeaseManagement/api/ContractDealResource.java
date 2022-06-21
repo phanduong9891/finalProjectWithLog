@@ -10,6 +10,7 @@ import com.axonactive.roomLeaseManagement.service.Impl.TenantServiceImpl;
 import com.axonactive.roomLeaseManagement.service.dto.ContractDealDto;
 import com.axonactive.roomLeaseManagement.service.dto.TenantRoomStayDto;
 import com.axonactive.roomLeaseManagement.service.mapper.ContractDealMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-@PreAuthorize("hasRole('ADMIN')")
+
+//@PreAuthorize("hasRole('ADMIN')")
+@Slf4j
 @RestController
 @RequestMapping(ContractDealResource.PATH)
 public class ContractDealResource {
@@ -33,22 +36,24 @@ public class ContractDealResource {
     private TenantServiceImpl tenantService;
 
     @GetMapping
-    public ResponseEntity<List<ContractDealDto>> getAll(){
+    public ResponseEntity<List<ContractDealDto>> getAll() {
         List<ContractDeal> contractDeals = contractDealService.getAll();
         return ResponseEntity.ok(ContractDealMapper.INSTANCE.toDtos(contractDeals));
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ContractDealDto> getById(@PathVariable(value = "id") Integer id) {
+        log.info("find contractDeal by id {}, ", id);
         ContractDeal contractDeal = contractDealService.findById(id)
                 .orElseThrow(ExceptionList::contractDealNotFound);
         return ResponseEntity.ok(ContractDealMapper.INSTANCE.toDto(contractDeal));
     }
 
     @GetMapping("/getTenantAndRoom")
-    public ResponseEntity<TenantRoomStayDto> getTenantAndRoom(@RequestParam(defaultValue = "empty") String phoneNumber){
-
+    public ResponseEntity<TenantRoomStayDto> getTenantAndRoom(@RequestParam(defaultValue = "empty") String phoneNumber) {
+        log.info("find contractDeal by phone number {} ", phoneNumber);
         ContractDeal contractDeal = contractDealService.findByContractTenantPhoneNumber(phoneNumber)
-                .orElseThrow(() -> ExceptionList.notFound("notFound","Cant find phone number: "+phoneNumber));
+                .orElseThrow(ExceptionList::contractDealNotFound);
         return ResponseEntity.ok(ContractDealMapper.INSTANCE.toTenantAndRoomDto(contractDeal));
     }
 
@@ -73,6 +78,7 @@ public class ContractDealResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<ContractDealDto> update(@PathVariable(value = "id") Integer id, @RequestBody ContractDealRequest contractDealRequest) throws ResourceNotFoundException {
+        log.info("find contractDeal by id {}, ", id);
         ContractDeal editContractDeal = contractDealService.findById(id)
                 .orElseThrow(ExceptionList::contractDealNotFound);
         editContractDeal.setRent(contractDealRequest.getRent());
@@ -91,6 +97,7 @@ public class ContractDealResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+        log.info("find contractDeal by id {}, ", id);
         ContractDeal contractDeal = contractDealService.findById(id)
                 .orElseThrow(ExceptionList::contractDealNotFound);
         contractService.deleteById(id);

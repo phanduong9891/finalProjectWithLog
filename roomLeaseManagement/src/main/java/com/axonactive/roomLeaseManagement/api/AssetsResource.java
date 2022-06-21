@@ -8,6 +8,7 @@ import com.axonactive.roomLeaseManagement.service.Impl.AssetsServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.RoomServiceImpl;
 import com.axonactive.roomLeaseManagement.service.dto.AssetsDto;
 import com.axonactive.roomLeaseManagement.service.mapper.AssetsMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')")
+@Slf4j
 @RestController
 @RequestMapping(AssetsResource.PATH)
 public class AssetsResource {
@@ -32,7 +34,8 @@ public class AssetsResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AssetsDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<AssetsDto> getById(@PathVariable(value = "id") Integer id){
+        log.info("find asset by id {} ",id );
         Assets assets = assetsService.findById(id)
                 .orElseThrow(ExceptionList::assetNotFound);
         return ResponseEntity.ok().body(AssetsMapper.INSTANCE.toDto(assets));
@@ -53,6 +56,7 @@ public class AssetsResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+        log.info("find asset by id {} ",id );
         Assets assets = assetsService.findById(id)
                 .orElseThrow(ExceptionList::assetNotFound);
         assetsService.deleteById(id);
@@ -61,6 +65,7 @@ public class AssetsResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<AssetsDto> update(@PathVariable(value = "id") Integer id, @RequestBody AssetsRequest assetsRequest) throws ResourceNotFoundException {
+        log.info("find asset by id {} ",id );
         Assets editAssets = assetsService.findById(id)
                 .orElseThrow(ExceptionList::assetNotFound);
         editAssets.setName(assetsRequest.getName());

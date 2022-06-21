@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor @NoArgsConstructor @Data
 public class TenantMonthsRentDto {
     private String fullName;
-    private Long numberOfMonths;
+    private Long numberOfMonthsStayed;
 }

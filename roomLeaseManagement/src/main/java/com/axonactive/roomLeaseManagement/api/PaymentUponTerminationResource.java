@@ -11,12 +11,13 @@ import com.axonactive.roomLeaseManagement.service.dto.PaymentUponTerminationDto;
 import com.axonactive.roomLeaseManagement.service.mapper.PaymentUponTerminationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
+//@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping(PaymentUponTerminationResource.PATH)
 public class PaymentUponTerminationResource {

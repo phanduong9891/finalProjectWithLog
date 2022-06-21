@@ -13,6 +13,7 @@ public interface ContractDealService {
     Optional<ContractDeal> findById(Integer id);
     void deleteById(Integer id);
     Optional<ContractDeal> findByContractTenantPhoneNumber(String phoneNumber);
+    Optional<ContractDeal> findByContractId(Integer id);
 
 
 }

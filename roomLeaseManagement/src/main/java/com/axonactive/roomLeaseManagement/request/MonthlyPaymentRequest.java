@@ -18,7 +18,7 @@ public class MonthlyPaymentRequest {
     private double electricityBill;
     private double waterBill;
     private double rent;
-    private boolean status;
+    private boolean paid;
     private LocalDate paidDay;
     private PaymentMethod paymentMethod;
     private Integer contractId;

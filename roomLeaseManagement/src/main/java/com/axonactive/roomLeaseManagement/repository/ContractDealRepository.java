@@ -12,5 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ContractDealRepository extends JpaRepository<ContractDeal,Integer> {
     Optional<ContractDeal> findByContractTenantPhoneNumber(String phoneNumber);
+    Optional<ContractDeal> findByContractId(Integer id);
 
 }
