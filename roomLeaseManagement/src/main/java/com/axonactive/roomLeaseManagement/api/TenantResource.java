@@ -1,6 +1,7 @@
 package com.axonactive.roomLeaseManagement.api;
 
 import com.axonactive.roomLeaseManagement.entity.Tenant;
+import com.axonactive.roomLeaseManagement.exception.ExceptionList;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.TenantRequest;
 import com.axonactive.roomLeaseManagement.service.Impl.RelativesServiceImpl;
@@ -34,10 +35,10 @@ public class TenantResource {
     public ResponseEntity<TenantDto> searchBy(@RequestParam(name = "phoneNumber",required = false)String phoneNumber, @RequestParam(name = "idCardNumber",required = false)String idCardNumber ) throws ResourceNotFoundException {
         if(null == idCardNumber){
         Tenant tenant = tenantService.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found with phone number: " + phoneNumber));
+                .orElseThrow(ExceptionList::tenantNotFound);
         return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));}
         Tenant tenant = tenantService.findByIdCardNumber(idCardNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found with id card number: " + idCardNumber));
+                .orElseThrow(ExceptionList::tenantNotFound);
         return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));
     }
 
@@ -57,7 +58,7 @@ public class TenantResource {
                         tenantRequest.getIdCardNumber(),
                         tenantRequest.getBirthday(),
                         relativesService.findById(tenantRequest.getRelativesId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Relative not found")))
+                                .orElseThrow(ExceptionList::relativeNotFound))
 
         );
         return ResponseEntity.created(URI.create((TenantResource.PATH + "/" + createTenant.getId()))).body(TenantMapper.INSTANCE.toDto(createTenant));
@@ -66,7 +67,7 @@ public class TenantResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Tenant tenant = tenantService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found"));
+                .orElseThrow(ExceptionList::tenantNotFound);
         tenantService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -74,14 +75,14 @@ public class TenantResource {
     @PutMapping("/{id}")
     public ResponseEntity<TenantDto> update(@PathVariable(value = "id") Integer id, @RequestBody TenantRequest tenantRequest) throws ResourceNotFoundException {
         Tenant editTenant = tenantService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found"));
+                .orElseThrow(ExceptionList::tenantNotFound);
         editTenant.setFirstName(tenantRequest.getFirstName());
         editTenant.setLastName(tenantRequest.getLastName());
         editTenant.setGender(tenantRequest.getGender());
         editTenant.setPhoneNumber(tenantRequest.getPhoneNumber());
         editTenant.setIdCardNumber(tenantRequest.getIdCardNumber());
         editTenant.setBirthday(tenantRequest.getBirthday());
-        editTenant.setRelatives(relativesService.findById(tenantRequest.getRelativesId()).orElseThrow(() -> new org.springframework.data.rest.webmvc.ResourceNotFoundException("Relative not found")));
+        editTenant.setRelatives(relativesService.findById(tenantRequest.getRelativesId())   .orElseThrow(ExceptionList::relativeNotFound));
 
         Tenant tenantUpdate = tenantService.save(editTenant);
 

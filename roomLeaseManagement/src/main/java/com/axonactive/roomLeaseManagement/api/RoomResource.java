@@ -34,9 +34,9 @@ public class RoomResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoomDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<RoomDto> getById(@PathVariable(value = "id") Integer id){
         Room room = roomService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id not found" + id));
+                .orElseThrow(ExceptionList::roomNotFound);
         return ResponseEntity.ok(RoomMapper.INSTANCE.toDto(room));
     }
     @GetMapping("/find")
@@ -44,7 +44,7 @@ public class RoomResource {
         if(roomNumber == null)
             return ResponseEntity.noContent().build();
         Room room = roomService.findByRoomNumber(roomNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Cant find room number: " + roomNumber));
+                .orElseThrow(ExceptionList::roomNotFound);
         return ResponseEntity.ok(RoomMapper.INSTANCE.toDto(room));
     }
 
@@ -61,14 +61,14 @@ public class RoomResource {
 
 
     @PostMapping
-    public ResponseEntity<RoomDto> create(@RequestBody RoomRequest roomRequest) throws ResourceNotFoundException {
+    public ResponseEntity<RoomDto> create(@RequestBody RoomRequest roomRequest){
         Room createRoom = roomService.save(new Room(
                 null,
                 roomRequest.getRoomNumber(),
                 roomRequest.getRoomType(),
                 roomRequest.getRoomStatus(),
                 ownerService.findById(roomRequest.getOwnerId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Owner not found"))
+                        .orElseThrow(ExceptionList::ownerNotFound)
         ));
         System.out.println(createRoom);
         return ResponseEntity.created(URI.create(RoomResource.PATH + "/" + createRoom.getId())).body(RoomMapper.INSTANCE.toDto(createRoom));
@@ -76,14 +76,14 @@ public class RoomResource {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<RoomDto> update(@PathVariable(value = "id") Integer id, @RequestBody RoomRequest roomRequest) throws ResourceNotFoundException {
+    public ResponseEntity<RoomDto> update(@PathVariable(value = "id") Integer id, @RequestBody RoomRequest roomRequest){
         Room editRoom = roomService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+                .orElseThrow(ExceptionList::roomNotFound);
         editRoom.setRoomNumber(roomRequest.getRoomNumber());
         editRoom.setRoomType(roomRequest.getRoomType());
         editRoom.setStatus(roomRequest.getRoomStatus());
         editRoom.setOwner(ownerService.findById(roomRequest.getOwnerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Owner not found")));
+                        .orElseThrow(ExceptionList::ownerNotFound));
 
         Room roomUpdate = roomService.save(editRoom);
 
@@ -92,9 +92,9 @@ public class RoomResource {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id){
         Room room = roomService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+                .orElseThrow(ExceptionList::roomNotFound);
         roomService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

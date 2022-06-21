@@ -1,6 +1,7 @@
 package com.axonactive.roomLeaseManagement.api;
 
 import com.axonactive.roomLeaseManagement.entity.Owner;
+import com.axonactive.roomLeaseManagement.exception.ExceptionList;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.service.Impl.OwnerServiceImpl;
 import com.axonactive.roomLeaseManagement.service.dto.OwnerDto;
@@ -27,9 +28,9 @@ public class OwnerResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OwnerDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<OwnerDto> getById(@PathVariable(value = "id") Integer id) {
         Owner owner = ownerService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+                .orElseThrow(ExceptionList::ownerNotFound);
         return ResponseEntity.ok().body(OwnerMapper.INSTANCE.toDto(owner));
     }
 
@@ -47,17 +48,17 @@ public class OwnerResource {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id){
         Owner owner = ownerService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Owner not found"));
+                .orElseThrow(ExceptionList::ownerNotFound);
         ownerService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OwnerDto> update(@PathVariable(value = "id") Integer id, @RequestBody OwnerDto ownerDto) throws ResourceNotFoundException {
+    public ResponseEntity<OwnerDto> update(@PathVariable(value = "id") Integer id, @RequestBody OwnerDto ownerDto){
         Owner editOwner = ownerService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Owner not found"));
+                .orElseThrow(ExceptionList::ownerNotFound);
 
         editOwner.setFirstName(ownerDto.getFirstName());
         editOwner.setLastName(ownerDto.getLastName());

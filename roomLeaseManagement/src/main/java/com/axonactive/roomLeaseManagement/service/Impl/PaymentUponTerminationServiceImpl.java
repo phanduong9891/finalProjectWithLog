@@ -34,6 +34,5 @@ public class PaymentUponTerminationServiceImpl implements PaymentUponTermination
     @Override
     public void deleteById(Integer id) {
         paymentUponTerminationRepository.deleteById(id);
-
     }
 }

@@ -40,7 +40,7 @@ public class ContractDealResource {
     @GetMapping("/{id}")
     public ResponseEntity<ContractDealDto> getById(@PathVariable(value = "id") Integer id) {
         ContractDeal contractDeal = contractDealService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+                .orElseThrow(ExceptionList::contractDealNotFound);
         return ResponseEntity.ok(ContractDealMapper.INSTANCE.toDto(contractDeal));
     }
 
@@ -74,15 +74,15 @@ public class ContractDealResource {
     @PutMapping("/{id}")
     public ResponseEntity<ContractDealDto> update(@PathVariable(value = "id") Integer id, @RequestBody ContractDealRequest contractDealRequest) throws ResourceNotFoundException {
         ContractDeal editContractDeal = contractDealService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id not found"));
+                .orElseThrow(ExceptionList::contractDealNotFound);
         editContractDeal.setRent(contractDealRequest.getRent());
         editContractDeal.setDeposit(contractDealRequest.getDeposit());
         editContractDeal.setElectricityPrice(contractDealRequest.getElectricityPrice());
         editContractDeal.setWaterPrice(contractDealRequest.getWaterPrice());
         editContractDeal.setMaximumGuest(contractDealRequest.getMaximumGuest());
         editContractDeal.setType(contractDealRequest.getType());
-        editContractDeal.setRoom(roomService.findById(contractDealRequest.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room not found")));
-        editContractDeal.setContract(contractService.findById(contractDealRequest.getContractId()).orElseThrow(() -> new ResourceNotFoundException("Contrac not found")));
+        editContractDeal.setRoom(roomService.findById(contractDealRequest.getRoomId()).orElseThrow(ExceptionList::roomNotFound));
+        editContractDeal.setContract(contractService.findById(contractDealRequest.getContractId()).orElseThrow(ExceptionList::contractNotFound));
 
         ContractDeal contractDealUpdate = contractDealService.save(editContractDeal);
 
@@ -92,7 +92,7 @@ public class ContractDealResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         ContractDeal contractDeal = contractDealService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("ContractDeal not found"));
+                .orElseThrow(ExceptionList::contractDealNotFound);
         contractService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

@@ -34,7 +34,7 @@ public class AssetsResource {
     @GetMapping("/{id}")
     public ResponseEntity<AssetsDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Assets assets = assetsService.findById(id)
-                .orElseThrow(() -> ExceptionList.notFound("notFound", "Id not existed"));
+                .orElseThrow(ExceptionList::assetNotFound);
         return ResponseEntity.ok().body(AssetsMapper.INSTANCE.toDto(assets));
     }
 
@@ -54,7 +54,7 @@ public class AssetsResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Assets assets = assetsService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
+                .orElseThrow(ExceptionList::assetNotFound);
         assetsService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -62,12 +62,12 @@ public class AssetsResource {
     @PutMapping("/{id}")
     public ResponseEntity<AssetsDto> update(@PathVariable(value = "id") Integer id, @RequestBody AssetsRequest assetsRequest) throws ResourceNotFoundException {
         Assets editAssets = assetsService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
+                .orElseThrow(ExceptionList::assetNotFound);
         editAssets.setName(assetsRequest.getName());
         editAssets.setQuantity(assetsRequest.getQuantity());
         editAssets.setPrice(assetsRequest.getPrice());
         editAssets.setStatus(assetsRequest.getStatus());
-        editAssets.setRoom(roomService.findById(assetsRequest.getRoomId()).orElseThrow(()-> new org.springframework.data.rest.webmvc.ResourceNotFoundException("Room not found")));
+        editAssets.setRoom(roomService.findById(assetsRequest.getRoomId()).orElseThrow(ExceptionList::roomNotFound));
 
         Assets assetsUpdate = assetsService.save(editAssets);
 

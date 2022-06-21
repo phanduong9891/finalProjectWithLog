@@ -4,6 +4,7 @@ package com.axonactive.roomLeaseManagement.api;
 import com.axonactive.roomLeaseManagement.entity.MonthlyPayment;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
 import com.axonactive.roomLeaseManagement.entity.PaymentMethod;
+import com.axonactive.roomLeaseManagement.exception.ExceptionList;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.MonthlyPaymentRequest;
 import com.axonactive.roomLeaseManagement.service.Impl.ContractServiceImpl;
@@ -45,7 +46,7 @@ public class MonthlyPaymentResource {
     @GetMapping("/{id}")
     public ResponseEntity<MonthlyPaymentDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         MonthlyPayment monthlyPayment = monthlyPaymentService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+                .orElseThrow(ExceptionList::monthlyPaymentNotFound);
         return ResponseEntity.ok().body(MonthlyPaymentMapper.INSTANCE.toDto(monthlyPayment));
     }
 
@@ -56,8 +57,8 @@ public class MonthlyPaymentResource {
                 monthlyPaymentService.totalWaterBill(LocalDate.parse(date1),LocalDate.parse(date2)),
                 monthlyPaymentService.totalRent(LocalDate.parse(date1),LocalDate.parse(date2)),
                 monthlyPaymentService.totalRevenue(LocalDate.parse(date1),LocalDate.parse(date2)),
-                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1),LocalDate.parse(date2), PaymentMethod.CASH),
-                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1),LocalDate.parse(date2),PaymentMethod.CARD))
+                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1),LocalDate.parse(date2), PaymentMethod.CASH),//may need to change to calc
+                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1),LocalDate.parse(date2),PaymentMethod.CARD))//may need to change to calc
         );
     }
 
@@ -82,15 +83,15 @@ public class MonthlyPaymentResource {
                         monthlyPaymentRequest.isStatus(),
                         monthlyPaymentRequest.getPaidDay(),
                         monthlyPaymentRequest.getPaymentMethod(),
-                        contractService.findById(monthlyPaymentRequest.getContractId()).orElseThrow(()-> new ResourceNotFoundException("Contract not found")))
-        );
+                        contractService.findById(monthlyPaymentRequest.getContractId()).orElseThrow(ExceptionList::contractNotFound)
+        ));
         return ResponseEntity.created(URI.create((MonthlyPaymentResource.PATH + "/" + createMonthlyPayment.getId()))).body(MonthlyPaymentMapper.INSTANCE.toDto(createMonthlyPayment));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         MonthlyPayment monthlyPayment = monthlyPaymentService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MonthlyPayment not found"));
+                .orElseThrow(ExceptionList::monthlyPaymentNotFound);
         monthlyPaymentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -98,13 +99,13 @@ public class MonthlyPaymentResource {
     @PutMapping("/{id}")
     public ResponseEntity<MonthlyPaymentDto> update(@PathVariable(value = "id") Integer id, @RequestBody MonthlyPaymentRequest monthlyPaymentRequest) throws ResourceNotFoundException {
         MonthlyPayment editMonthlyPayment = monthlyPaymentService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MonthlyPayment not found"));
+                .orElseThrow(ExceptionList::monthlyPaymentNotFound);
         editMonthlyPayment.setMonth(monthlyPaymentRequest.getMonth());
         editMonthlyPayment.setYear(monthlyPaymentRequest.getYear());
         editMonthlyPayment.setElectricityBill(monthlyPaymentRequest.getElectricityBill());
         editMonthlyPayment.setWaterBill(monthlyPaymentRequest.getWaterBill());
         editMonthlyPayment.setRent(monthlyPaymentRequest.getRent());
-        editMonthlyPayment.setContract(contractService.findById(monthlyPaymentRequest.getContractId()).orElseThrow(()-> new ResourceNotFoundException("Contract not found")));
+        editMonthlyPayment.setContract(contractService.findById(monthlyPaymentRequest.getContractId()).orElseThrow(ExceptionList::contractNotFound));
 
         MonthlyPayment monthlyPaymentUpdate = monthlyPaymentService.save(editMonthlyPayment);
 

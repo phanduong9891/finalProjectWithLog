@@ -1,6 +1,7 @@
 package com.axonactive.roomLeaseManagement.api;
 
 import com.axonactive.roomLeaseManagement.entity.Relatives;
+import com.axonactive.roomLeaseManagement.exception.ExceptionList;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.service.Impl.RelativesServiceImpl;
 import com.axonactive.roomLeaseManagement.service.dto.RelativesDto;
@@ -27,9 +28,9 @@ public class RelativesResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RelativesDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<RelativesDto> getById(@PathVariable(value = "id") Integer id) {
         Relatives relatives = relativesService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+                .orElseThrow(ExceptionList::relativeNotFound);
         return ResponseEntity.ok().body(RelativesMapper.INSTANCE.toDto(relatives));
     }
 
@@ -49,15 +50,15 @@ public class RelativesResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Relatives relatives = relativesService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Relative not found"));
+                .orElseThrow(ExceptionList::relativeNotFound);
         relativesService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RelativesDto> update(@PathVariable(value = "id") Integer id, @RequestBody RelativesDto relativesDto) throws ResourceNotFoundException {
+    public ResponseEntity<RelativesDto> update(@PathVariable(value = "id") Integer id, @RequestBody RelativesDto relativesDto){
         Relatives editRelatives = relativesService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Relative not found"));
+                .orElseThrow(ExceptionList::relativeNotFound);
         editRelatives.setFirstName(relativesDto.getFirstName());
         editRelatives.setLastName(relativesDto.getLastName());
         editRelatives.setRelationship(relativesDto.getRelationship());

@@ -5,6 +5,7 @@ package com.axonactive.roomLeaseManagement.api;
 import com.axonactive.roomLeaseManagement.entity.ContractDeal;
 import com.axonactive.roomLeaseManagement.entity.Month;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
+import com.axonactive.roomLeaseManagement.exception.ExceptionList;
 import com.axonactive.roomLeaseManagement.exception.ResourceNotFoundException;
 import com.axonactive.roomLeaseManagement.request.MonthlyServiceUsingRequest;
 import com.axonactive.roomLeaseManagement.service.ContractDealService;
@@ -37,7 +38,7 @@ public class MonthlyServiceUsingResource {
     @GetMapping("/{id}")
     public ResponseEntity<MonthlyServiceUsingDto> getById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         MonthlyServiceUsing monthlyServiceUsing = monthlyServiceUsingService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id Not found: " + id));
+                .orElseThrow(ExceptionList::monthlyServiceUsingNotFound);
         return ResponseEntity.ok().body(MonthlyServiceUsingMapper.INSTANCE.toServiceUsingDto(monthlyServiceUsing));
     }
 
@@ -45,7 +46,7 @@ public class MonthlyServiceUsingResource {
     public ResponseEntity<List<MonthlyMoneyCollectedDto>> getMoneyCollectd(@RequestParam(name = "month",required = false)String month) throws ResourceNotFoundException {
         if(month != null){
         List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.findByMonth(Month.valueOf(month.toUpperCase()))
-                .orElseThrow(() -> new ResourceNotFoundException("Cant find this month: " + month));
+                .orElseThrow(ExceptionList::monthlyServiceUsingNotFound);
         return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toMoneyCollectedDtos(monthlyServiceUsingList));}
         List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.getAll();
         return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toMoneyCollectedDtos(monthlyServiceUsingList));
@@ -54,7 +55,7 @@ public class MonthlyServiceUsingResource {
     @PostMapping
     public ResponseEntity<MonthlyServiceUsingDto> create(@RequestBody MonthlyServiceUsingRequest monthlyServiceUsingRequest) throws ResourceNotFoundException {
         ContractDeal requestedContractDeal =  contractDealService.findById(monthlyServiceUsingRequest.getContractDealId())
-                .orElseThrow(()-> new ResourceNotFoundException("ContractDeal not found"));
+                .orElseThrow(ExceptionList::contractDealNotFound);
 
         MonthlyServiceUsing createMonthlyServiceUsing = monthlyServiceUsingService.save(
                 new MonthlyServiceUsing(null,
@@ -72,7 +73,7 @@ public class MonthlyServiceUsingResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         MonthlyServiceUsing monthlyServiceUsing = monthlyServiceUsingService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MonthlyServiceUsing not found"));
+                .orElseThrow(ExceptionList::monthlyServiceUsingNotFound);
         monthlyServiceUsingService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -80,7 +81,7 @@ public class MonthlyServiceUsingResource {
     @PutMapping("/{id}")
     public ResponseEntity<MonthlyServiceUsingDto> update(@PathVariable(value = "id") Integer id, @RequestBody MonthlyServiceUsingRequest monthlyServiceUsingRequest) throws ResourceNotFoundException {
         MonthlyServiceUsing editMonthlyServiceUsing = monthlyServiceUsingService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MonthlyServiceUsing not found"));
+                .orElseThrow(ExceptionList::monthlyServiceUsingNotFound);
         editMonthlyServiceUsing.setElectricityUsage(monthlyServiceUsingRequest.getElectricityUsage());
         editMonthlyServiceUsing.setMonth(monthlyServiceUsingRequest.getMonth());
         editMonthlyServiceUsing.setYear(monthlyServiceUsingRequest.getYear());
