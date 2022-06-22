@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping(MonthlyPaymentResource.PATH)
 public class MonthlyPaymentResource {

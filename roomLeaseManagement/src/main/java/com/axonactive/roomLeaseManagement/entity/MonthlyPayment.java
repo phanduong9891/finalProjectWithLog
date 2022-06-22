@@ -21,26 +21,26 @@ public class MonthlyPayment {
 
 
     @Enumerated(EnumType.STRING)
-    private Month month;//may need to change name in the database
+    private Month month;
 
     private String year;
 
-    private double electricityBill;//this may need to change to calculation method
+    private double electricityBill;
 
     @NotNull
     @Column(nullable = false)
-    private double waterBill;////need to check with waterPrice in contractDeal to make sure data integrity;
+    private double waterBill;
 
     @NotNull
     @Column(nullable = false)
-    private double rent;//need to check with rent in contractDeal to make sure data integrity;
+    private double rent;
 
     @NotNull
     @Column(nullable = false, name = "paid")
     private boolean paid;
 
     @Column
-    private LocalDate paidDay;//only have data when status is true
+    private LocalDate paidDay;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -49,11 +49,5 @@ public class MonthlyPayment {
     @JoinColumn
     @ManyToOne
     private Contract contract;
-//
-//    public LocalDate getPaidDay() {
-//        if (!paid){
-//            return null;
-//        }
-//        return paidDay;
-//    }
+
 }

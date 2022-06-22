@@ -19,13 +19,13 @@ public class PaymentUponTermination {
     private Integer id;
 
 
-    private LocalDate dayCreated;//thuong de localdate.now?
+    private LocalDate dayCreated;
 
     @Column
     private double damageFee;
 
     @Column
-    private double depositRefund;//may need to check to not excel deposit set in contractDeal
+    private double depositRefund;
 
     @JoinColumn
     @ManyToOne

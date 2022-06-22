@@ -27,7 +27,7 @@ public class ContractDeal {
     private double deposit;
 
     @NotNull
-    @Column(nullable = false, name = "electricity_price_per_Kw")//may need to change this name
+    @Column(nullable = false, name = "electricity_price_per_Kw")
     private double electricityPrice;
 
     @NotNull

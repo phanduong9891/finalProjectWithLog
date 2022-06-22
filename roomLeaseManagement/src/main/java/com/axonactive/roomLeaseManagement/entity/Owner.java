@@ -25,7 +25,7 @@ public class Owner {
 
     @NotNull
     @Column(nullable = false)
-    private String phoneNumber;//may need add length for column
+    private String phoneNumber;
 
     private String email;
 
