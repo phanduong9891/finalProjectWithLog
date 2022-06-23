@@ -24,8 +24,6 @@ public class ContractResource {
     public static final String PATH = "/api/contract";
     @Autowired
     private ContractServiceImpl contractService;
-    @Autowired
-    private TenantServiceImpl tenantService;
 
     @GetMapping
     public ResponseEntity<List<ContractDto>> getAll() {
@@ -34,7 +32,7 @@ public class ContractResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContractDto> getById(@PathVariable(value = "id") Integer id, @RequestParam(name = "phoneNumber", required = false) String phoneNumber) throws ResourceNotFoundException {
+    public ResponseEntity<ContractDto> getById(@PathVariable(value = "id") Integer id, @RequestParam(name = "phoneNumber", required = false) String phoneNumber){
         if (null == phoneNumber) {
             return ResponseEntity.ok(ContractMapper.INSTANCE.toDto(contractService.findById(id)
                     .orElseThrow(ExceptionList::contractNotFound)));
@@ -48,20 +46,13 @@ public class ContractResource {
     }
 
     @PostMapping
-    public ResponseEntity<ContractDto> create(@RequestBody ContractRequest contractRequest) throws ResourceNotFoundException {
-        Contract createContract = contractService.save(
-                new Contract(null,
-                        contractRequest.getDateSigned(),
-                        contractRequest.getDateExpiry(),
-                        contractRequest.getContractValue(),
-                        tenantService.findById(contractRequest.getTenantId())
-                                .orElseThrow(ExceptionList::tenantNotFound))
-        );
+    public ResponseEntity<ContractDto> create(@RequestBody ContractRequest contractRequest){
+        Contract createContract = contractService.save(contractService.create(contractRequest));
         return ResponseEntity.created(URI.create((ContractResource.PATH + "/" + createContract.getId()))).body(ContractMapper.INSTANCE.toDto(createContract));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id){
         Contract contract = contractService.findById(id)
                 .orElseThrow(ExceptionList::contractNotFound);
         contractService.deleteById(id);
@@ -69,17 +60,9 @@ public class ContractResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ContractDto> update(@PathVariable(value = "id") Integer id, @RequestBody ContractRequest contractRequest) throws ResourceNotFoundException {
-        Contract editContract = contractService.findById(id)
-                .orElseThrow(ExceptionList::contractNotFound);
-        editContract.setDateSigned(contractRequest.getDateSigned());
-        editContract.setDateExpiry(contractRequest.getDateExpiry());
-        editContract.setContractValue(contractRequest.getContractValue());
-        editContract.setTenant(tenantService.findById(contractRequest.getTenantId())
-                .orElseThrow(ExceptionList::tenantNotFound));
+    public ResponseEntity<ContractDto> update(@PathVariable(value = "id") Integer contractId, @RequestBody ContractRequest contractRequest) {
 
-        Contract contractUpdate = contractService.save(editContract);
-
+        Contract contractUpdate = contractService.save(contractService.edit(contractId,contractRequest));
 
         return ResponseEntity.ok(ContractMapper.INSTANCE.toDto(contractUpdate));
     }

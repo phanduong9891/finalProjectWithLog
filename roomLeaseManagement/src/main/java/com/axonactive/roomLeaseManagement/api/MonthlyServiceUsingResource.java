@@ -1,7 +1,6 @@
 package com.axonactive.roomLeaseManagement.api;
 
 
-
 import com.axonactive.roomLeaseManagement.entity.ContractDeal;
 import com.axonactive.roomLeaseManagement.entity.Month;
 import com.axonactive.roomLeaseManagement.entity.MonthlyServiceUsing;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+
 @PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping(MonthlyServiceUsingResource.PATH)
@@ -44,27 +44,21 @@ public class MonthlyServiceUsingResource {
     }
 
     @GetMapping("/moneyCollected")
-    public ResponseEntity<List<MonthlyMoneyCollectedDto>> getMoneyCollectd(@RequestParam(name = "month",required = false)String month) throws ResourceNotFoundException {
-        if(month != null){
-        List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.findByMonth(Month.valueOf(month.toUpperCase()))
-                .orElseThrow(ExceptionList::monthlyServiceUsingNotFound);
-        return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toMoneyCollectedDtos(monthlyServiceUsingList));}
+    public ResponseEntity<List<MonthlyMoneyCollectedDto>> getMoneyCollectd(@RequestParam(name = "month", required = false) String month) throws ResourceNotFoundException {
+        if (month != null) {
+            List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.findByMonth(Month.valueOf(month.toUpperCase()))
+                    .orElseThrow(ExceptionList::monthlyServiceUsingNotFound);
+            return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toMoneyCollectedDtos(monthlyServiceUsingList));
+        }
         List<MonthlyServiceUsing> monthlyServiceUsingList = monthlyServiceUsingService.getAll();
         return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toMoneyCollectedDtos(monthlyServiceUsingList));
     }
 
     @PostMapping
     public ResponseEntity<MonthlyServiceUsingDto> create(@RequestBody MonthlyServiceUsingRequest monthlyServiceUsingRequest) throws ResourceNotFoundException {
-        ContractDeal requestedContractDeal =  contractDealService.findById(monthlyServiceUsingRequest.getContractDealId())
-                .orElseThrow(ExceptionList::contractDealNotFound);
 
         MonthlyServiceUsing createMonthlyServiceUsing = monthlyServiceUsingService.save(
-                new MonthlyServiceUsing(null,
-                        monthlyServiceUsingRequest.getElectricityUsage(),
-                        monthlyServiceUsingRequest.getMonth(),
-                        monthlyServiceUsingRequest.getYear(),
-                        requestedContractDeal
-                        )
+                monthlyServiceUsingService.create(monthlyServiceUsingRequest)
         );
         return ResponseEntity
                 .created(URI.create((MonthlyServiceUsingResource.PATH + "/" + createMonthlyServiceUsing.getId())))
@@ -80,14 +74,9 @@ public class MonthlyServiceUsingResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MonthlyServiceUsingDto> update(@PathVariable(value = "id") Integer id, @RequestBody MonthlyServiceUsingRequest monthlyServiceUsingRequest) throws ResourceNotFoundException {
-        MonthlyServiceUsing editMonthlyServiceUsing = monthlyServiceUsingService.findById(id)
-                .orElseThrow(ExceptionList::monthlyServiceUsingNotFound);
-        editMonthlyServiceUsing.setElectricityUsage(monthlyServiceUsingRequest.getElectricityUsage());
-        editMonthlyServiceUsing.setMonth(monthlyServiceUsingRequest.getMonth());
-        editMonthlyServiceUsing.setYear(monthlyServiceUsingRequest.getYear());
+    public ResponseEntity<MonthlyServiceUsingDto> update(@PathVariable(value = "id") Integer monthlyServiceUsingId, @RequestBody MonthlyServiceUsingRequest monthlyServiceUsingRequest) throws ResourceNotFoundException {
 
-        MonthlyServiceUsing monthlyServiceUsingUpdate = monthlyServiceUsingService.save(editMonthlyServiceUsing);
+        MonthlyServiceUsing monthlyServiceUsingUpdate = monthlyServiceUsingService.save(monthlyServiceUsingService.edit(monthlyServiceUsingId,monthlyServiceUsingRequest));
 
         return ResponseEntity.ok(MonthlyServiceUsingMapper.INSTANCE.toServiceUsingDto(monthlyServiceUsingUpdate));
     }

@@ -17,6 +17,7 @@ import com.axonactive.roomLeaseManagement.service.dto.MonthlyPaymentDto;
 import com.axonactive.roomLeaseManagement.service.dto.MonthlyServiceUsingDto;
 import com.axonactive.roomLeaseManagement.service.mapper.MonthlyPaymentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,20 +34,16 @@ public class MonthlyPaymentResource {
     public static final String PATH = "/api/monthlyPayment";
     @Autowired
     private MonthlyPaymentServiceImpl monthlyPaymentService;
-    @Autowired
-    private ContractServiceImpl contractService;
-    @Autowired
-    private ContractDealServiceImpl contractDealService;
-    @Autowired
-    private MonthlyServiceUsingServiceImpl monthlyServiceUsingService;
+
 
     @GetMapping
-    public ResponseEntity<List<MonthlyPaymentDto>> getAll(@RequestParam(name = "date1", required = false) String date1, @RequestParam(name = "date2", required = false) String date2) {
+    public ResponseEntity<List<MonthlyPaymentDto>> getAll(@RequestParam(name = "date1", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
+                                                          @RequestParam(name = "date2", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
         if (null == date1 && null == date2) {
             List<MonthlyPayment> monthlyPaymentList = monthlyPaymentService.getAll();
             return ResponseEntity.ok(MonthlyPaymentMapper.INSTANCE.toDtos(monthlyPaymentList));
         } else {
-            List<MonthlyPayment> monthlyPaymentList = monthlyPaymentService.findByPaidDayBetween(LocalDate.parse(date1), LocalDate.parse(date2));
+            List<MonthlyPayment> monthlyPaymentList = monthlyPaymentService.findByPaidDayBetween(date1,date2);
             return ResponseEntity.ok(MonthlyPaymentMapper.INSTANCE.toDtos(monthlyPaymentList));
         }
     }
@@ -60,15 +57,9 @@ public class MonthlyPaymentResource {
     }
 
     @GetMapping("/showReport")
-    public ResponseEntity<BusinessReportDto> showReport(@RequestParam(name = "date1") String date1, @RequestParam(name = "date2") String date2) {
-        return ResponseEntity.ok(new BusinessReportDto(
-                monthlyPaymentService.totalElectricityBill(LocalDate.parse(date1), LocalDate.parse(date2)),
-                monthlyPaymentService.totalWaterBill(LocalDate.parse(date1), LocalDate.parse(date2)),
-                monthlyPaymentService.totalRent(LocalDate.parse(date1), LocalDate.parse(date2)),
-                monthlyPaymentService.totalRevenue(LocalDate.parse(date1), LocalDate.parse(date2)),
-                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1), LocalDate.parse(date2), PaymentMethod.CASH),//may need to change to calc
-                monthlyPaymentService.numberOfPayThroughMethod(LocalDate.parse(date1), LocalDate.parse(date2), PaymentMethod.CARD))//may need to change to calc
-        );
+    public ResponseEntity<BusinessReportDto> showReport(@RequestParam(name = "date1", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
+                                                        @RequestParam(name = "date2", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
+        return ResponseEntity.ok(monthlyPaymentService.showReport(date1,date2));
     }
 
     @GetMapping("/Unpaid")
@@ -82,21 +73,9 @@ public class MonthlyPaymentResource {
 
     @PostMapping
     public ResponseEntity<MonthlyPaymentDto> create(@RequestBody MonthlyPaymentRequest monthlyPaymentRequest) throws ResourceNotFoundException {
-//        Contract contract =contractService.findById(monthlyPaymentRequest.getContractId()).orElseThrow(ExceptionList::contractNotFound);
-//        ContractDeal contractDeal = contractDealService.findByContractId(contract.getId()).orElseThrow(ExceptionList::contractDealNotFound);
-//        MonthlyServiceUsing monthlyServiceUsing=monthlyPaymentService.
-        MonthlyPayment createMonthlyPayment = new MonthlyPayment(
-                null,
-                monthlyPaymentRequest.getMonth(),
-                monthlyPaymentRequest.getYear(),
-                monthlyPaymentRequest.getElectricityBill(),
-                monthlyPaymentRequest.getWaterBill(),
-                monthlyPaymentRequest.getRent(),
-                monthlyPaymentRequest.isPaid(),
-                LocalDate.now(),
-                monthlyPaymentRequest.getPaymentMethod(),
-                contractService.findById(monthlyPaymentRequest.getContractId()).orElseThrow(ExceptionList::contractNotFound)
-        );
+
+        MonthlyPayment createMonthlyPayment = monthlyPaymentService.save(monthlyPaymentService.create(monthlyPaymentRequest));
+
         return ResponseEntity.created(URI.create((MonthlyPaymentResource.PATH + "/" + createMonthlyPayment.getId()))).body(MonthlyPaymentMapper.INSTANCE.toDto(createMonthlyPayment));
     }
 
@@ -109,19 +88,9 @@ public class MonthlyPaymentResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MonthlyPaymentDto> update(@PathVariable(value = "id") Integer id, @RequestBody MonthlyPaymentRequest monthlyPaymentRequest) {
-        MonthlyPayment editMonthlyPayment = monthlyPaymentService.findById(id)
-                .orElseThrow(ExceptionList::monthlyPaymentNotFound);
-        editMonthlyPayment.setMonth(monthlyPaymentRequest.getMonth());
-        editMonthlyPayment.setYear(monthlyPaymentRequest.getYear());
-        editMonthlyPayment.setElectricityBill(monthlyPaymentRequest.getElectricityBill());
-        editMonthlyPayment.setWaterBill(monthlyPaymentRequest.getWaterBill());
-        editMonthlyPayment.setRent(monthlyPaymentRequest.getRent());
-        editMonthlyPayment.setPaidDay(monthlyPaymentRequest.getPaidDay());
-        editMonthlyPayment.setContract(contractService.findById(monthlyPaymentRequest.getContractId()).orElseThrow(ExceptionList::contractNotFound));
+    public ResponseEntity<MonthlyPaymentDto> update(@PathVariable(value = "id") Integer monthlyPaymentId, @RequestBody MonthlyPaymentRequest monthlyPaymentRequest) {
 
-        MonthlyPayment monthlyPaymentUpdate = monthlyPaymentService.save(editMonthlyPayment);
-
+        MonthlyPayment monthlyPaymentUpdate = monthlyPaymentService.save(monthlyPaymentService.edit(monthlyPaymentId,monthlyPaymentRequest));
 
         return ResponseEntity.ok(MonthlyPaymentMapper.INSTANCE.toDto(monthlyPaymentUpdate));
     }

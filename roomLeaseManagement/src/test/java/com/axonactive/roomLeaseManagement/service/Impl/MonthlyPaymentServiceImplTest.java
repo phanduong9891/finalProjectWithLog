@@ -42,8 +42,8 @@ class MonthlyPaymentServiceImplTest {
     }
 
     @Test
-    void testNumberOfPayThroughMethod_shouldReturn3_whenInsertMonthOfJuneAndPaymentMethodIsCash() {
-        assertEquals(3, monthlyPaymentService.numberOfPayThroughMethod(LocalDate.of(2022,6,1),LocalDate.of(2022,6,30), PaymentMethod.CASH));
+    void testPaidAmountThroughMethod_shouldReturn22340000_whenInsertMonthOfJuneAndPaymentMethodIsCash() {
+        assertEquals(22340000, monthlyPaymentService.numberOfPayThroughMethod(LocalDate.of(2022,6,1),LocalDate.of(2022,6,30), PaymentMethod.CASH));
 
     }
 }

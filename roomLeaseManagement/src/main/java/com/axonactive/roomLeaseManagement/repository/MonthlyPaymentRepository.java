@@ -35,10 +35,11 @@ public interface MonthlyPaymentRepository extends JpaRepository<MonthlyPayment, 
             "WHERE m.paidDay BETWEEN ?1 AND ?2")
     double totalRevenue(LocalDate date1, LocalDate date2);
 
-    @Query("SELECT COUNT(m.id) FROM MonthlyPayment m " +
+    @Query("SELECT SUM(m.electricityBill + m.rent + m.waterBill) FROM MonthlyPayment m " +
             "WHERE (m.paidDay BETWEEN ?1 AND ?2) " +
             "AND m.paymentMethod = ?3 AND m.paid = true")
-    Integer numberOfPayThroughMethod(LocalDate date1, LocalDate date2, PaymentMethod paymentMethod);
+    Integer paidAmountThroughMethod(LocalDate date1, LocalDate date2, PaymentMethod paymentMethod);
+
 
     List<MonthlyPayment> findByPaid(Boolean status);
 

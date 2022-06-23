@@ -2,6 +2,7 @@ package com.axonactive.roomLeaseManagement.service;
 
 import com.axonactive.roomLeaseManagement.entity.ContractDeal;
 import com.axonactive.roomLeaseManagement.entity.ContractType;
+import com.axonactive.roomLeaseManagement.request.ContractDealRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,8 @@ public interface ContractDealService {
     void deleteById(Integer id);
     Optional<ContractDeal> findByContractTenantPhoneNumber(String phoneNumber);
     Optional<ContractDeal> findByContractId(Integer id);
+    ContractDeal create(ContractDealRequest contractDealRequest);
+    ContractDeal edit(Integer contractDealId, ContractDealRequest contractDealRequest);
 
 
 }

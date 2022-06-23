@@ -1,9 +1,12 @@
 package com.axonactive.roomLeaseManagement.api;
 
+import com.axonactive.roomLeaseManagement.entity.Contract;
 import com.axonactive.roomLeaseManagement.entity.ContractDeal;
+import com.axonactive.roomLeaseManagement.entity.Room;
 import com.axonactive.roomLeaseManagement.exception.ExceptionList;
 import com.axonactive.roomLeaseManagement.request.ContractDealRequest;
 import com.axonactive.roomLeaseManagement.service.ContractDealService;
+import com.axonactive.roomLeaseManagement.service.Impl.ContractDealServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.ContractServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.RoomServiceImpl;
 import com.axonactive.roomLeaseManagement.service.Impl.TenantServiceImpl;
@@ -27,7 +30,7 @@ import java.util.List;
 public class ContractDealResource {
     public static final String PATH = "/api/contractDeal";
     @Autowired
-    private ContractDealService contractDealService;
+    private ContractDealServiceImpl contractDealService;
     @Autowired
     private RoomServiceImpl roomService;
     @Autowired
@@ -59,17 +62,7 @@ public class ContractDealResource {
 
     @PostMapping
     public ResponseEntity<ContractDealDto> create(@RequestBody ContractDealRequest contractDealRequest) throws ResourceNotFoundException {
-        ContractDeal createContractDeal = new ContractDeal(
-                null,
-                contractDealRequest.getRent(),
-                contractDealRequest.getDeposit(),
-                contractDealRequest.getElectricityPrice(),
-                contractDealRequest.getWaterPrice(),
-                contractDealRequest.getMaximumGuest(),
-                contractDealRequest.getType(),
-                roomService.findById(contractDealRequest.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room Not found")),
-                contractService.findById(contractDealRequest.getContractId()).orElseThrow(() -> new ResourceNotFoundException("Contract not found"))
-        );
+        ContractDeal createContractDeal = contractDealService.save(contractDealService.create(contractDealRequest));
 
         contractDealService.save(createContractDeal);
 
@@ -77,20 +70,9 @@ public class ContractDealResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ContractDealDto> update(@PathVariable(value = "id") Integer id, @RequestBody ContractDealRequest contractDealRequest) throws ResourceNotFoundException {
-        log.info("find contractDeal by id {}, ", id);
-        ContractDeal editContractDeal = contractDealService.findById(id)
-                .orElseThrow(ExceptionList::contractDealNotFound);
-        editContractDeal.setRent(contractDealRequest.getRent());
-        editContractDeal.setDeposit(contractDealRequest.getDeposit());
-        editContractDeal.setElectricityPrice(contractDealRequest.getElectricityPrice());
-        editContractDeal.setWaterPrice(contractDealRequest.getWaterPrice());
-        editContractDeal.setMaximumGuest(contractDealRequest.getMaximumGuest());
-        editContractDeal.setType(contractDealRequest.getType());
-        editContractDeal.setRoom(roomService.findById(contractDealRequest.getRoomId()).orElseThrow(ExceptionList::roomNotFound));
-        editContractDeal.setContract(contractService.findById(contractDealRequest.getContractId()).orElseThrow(ExceptionList::contractNotFound));
+    public ResponseEntity<ContractDealDto> update(@PathVariable(value = "id") Integer id, @RequestBody ContractDealRequest contractDealRequest){
 
-        ContractDeal contractDealUpdate = contractDealService.save(editContractDeal);
+        ContractDeal contractDealUpdate = contractDealService.save(contractDealService.edit(id,contractDealRequest));
 
         return ResponseEntity.ok(ContractDealMapper.INSTANCE.toDto(contractDealUpdate));
     }
