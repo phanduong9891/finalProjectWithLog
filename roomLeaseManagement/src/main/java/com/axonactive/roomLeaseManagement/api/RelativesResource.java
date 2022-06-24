@@ -37,14 +37,7 @@ public class RelativesResource {
 
     @PostMapping
     public ResponseEntity<RelativesDto> create(@RequestBody RelativesDto relativesDto) {
-        Relatives createRelatives = relativesService.save(
-                new Relatives(null,
-                        relativesDto.getFirstName(),
-                        relativesDto.getLastName(),
-                        relativesDto.getRelationship(),
-                        relativesDto.getPhoneNumber(),
-                        relativesDto.getIdCardNumber()
-        ));
+        Relatives createRelatives = relativesService.save(relativesService.create(relativesDto));
         return ResponseEntity.created(URI.create((RelativesResource.PATH + "/" + createRelatives.getId()))).body(RelativesMapper.INSTANCE.toDto(createRelatives));
     }
 
@@ -58,15 +51,8 @@ public class RelativesResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<RelativesDto> update(@PathVariable(value = "id") Integer id, @RequestBody RelativesDto relativesDto){
-        Relatives editRelatives = relativesService.findById(id)
-                .orElseThrow(ExceptionList::relativeNotFound);
-        editRelatives.setFirstName(relativesDto.getFirstName());
-        editRelatives.setLastName(relativesDto.getLastName());
-        editRelatives.setRelationship(relativesDto.getRelationship());
-        editRelatives.setPhoneNumber(relativesDto.getPhoneNumber());
-        editRelatives.setIdCardNumber(relativesDto.getIdCardNumber());
 
-         Relatives relativesUpdate = relativesService.save(editRelatives);
+         Relatives relativesUpdate = relativesService.save(relativesService.edit(id,relativesDto));
 
         return ResponseEntity.ok(RelativesMapper.INSTANCE.toDto(relativesUpdate));
     }

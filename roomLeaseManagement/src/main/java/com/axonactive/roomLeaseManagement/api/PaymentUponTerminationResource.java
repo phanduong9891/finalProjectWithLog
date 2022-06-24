@@ -43,17 +43,8 @@ public class PaymentUponTerminationResource {
 
     @PostMapping
     public ResponseEntity<PaymentUponTerminationDto> create(@RequestBody PaymentUponTerminationRequest paymentUponTerminationRequest) throws ResourceNotFoundException {
-       Contract contract = contractService.findById(paymentUponTerminationRequest.getContractId()).
-               orElseThrow(ExceptionList::contractNotFound);
 
-        PaymentUponTermination paymentUponTermination = new PaymentUponTermination();
-
-        paymentUponTermination.setDayCreated( paymentUponTerminationRequest.getDayCreated());
-        paymentUponTermination.setDamageFee( paymentUponTerminationRequest.getDamageFee());
-        paymentUponTermination.setDepositRefund( paymentUponTerminationRequest.getDepositRefund());
-        paymentUponTermination.setContract(contract);///nguyen phan set nay xuong service(if possible)
-
-        PaymentUponTermination createPaymentUponTermination = paymentUponTerminationService.save(paymentUponTermination);
+        PaymentUponTermination createPaymentUponTermination = paymentUponTerminationService.save(paymentUponTerminationService.create(paymentUponTerminationRequest));
 
         return ResponseEntity.created(URI.create((PaymentUponTerminationResource.PATH + "/" + createPaymentUponTermination.getId()))).body(PaymentUponTerminationMapper.INSTANCE.toDto(createPaymentUponTermination));
     }
@@ -68,15 +59,8 @@ public class PaymentUponTerminationResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<PaymentUponTerminationDto> update(@PathVariable(value = "id") Integer id, @RequestBody PaymentUponTerminationRequest paymentUponTerminationRequest) throws ResourceNotFoundException {
-        PaymentUponTermination editPaymentUponTermination = paymentUponTerminationService.findById(id)
-                .orElseThrow(ExceptionList::paymentUponTerminationNotFound);
-        editPaymentUponTermination.setDayCreated(paymentUponTerminationRequest.getDayCreated());
-        editPaymentUponTermination.setDamageFee(paymentUponTerminationRequest.getDamageFee());
-        editPaymentUponTermination.setDepositRefund(paymentUponTerminationRequest.getDepositRefund());
-        editPaymentUponTermination.setContract(contractService.findById(paymentUponTerminationRequest.getContractId())
-                .orElseThrow(ExceptionList::contractNotFound));
 
-        PaymentUponTermination paymentUponTerminationUpdate = paymentUponTerminationService.save(editPaymentUponTermination);
+        PaymentUponTermination paymentUponTerminationUpdate = paymentUponTerminationService.save(paymentUponTerminationService.edit(id,paymentUponTerminationRequest));
 
         return ResponseEntity.ok(PaymentUponTerminationMapper.INSTANCE.toDto(paymentUponTerminationUpdate));
     }

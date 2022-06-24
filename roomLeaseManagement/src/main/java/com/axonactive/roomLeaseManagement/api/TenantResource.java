@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+
 @PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping(TenantResource.PATH)
@@ -33,35 +34,26 @@ public class TenantResource {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<TenantDto> searchBy(@RequestParam(name = "phoneNumber",required = false)String phoneNumber, @RequestParam(name = "idCardNumber",required = false)String idCardNumber ) throws ResourceNotFoundException {
-        if(null == idCardNumber){
-        Tenant tenant = tenantService.findByPhoneNumber(phoneNumber)
-                .orElseThrow(ExceptionList::tenantNotFound);
-        return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));}
+    public ResponseEntity<TenantDto> searchBy(@RequestParam(name = "phoneNumber", required = false) String phoneNumber, @RequestParam(name = "idCardNumber", required = false) String idCardNumber) throws ResourceNotFoundException {
+        if (null == idCardNumber) {
+            Tenant tenant = tenantService.findByPhoneNumber(phoneNumber)
+                    .orElseThrow(ExceptionList::tenantNotFound);
+            return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));
+        }
         Tenant tenant = tenantService.findByIdCardNumber(idCardNumber)
                 .orElseThrow(ExceptionList::tenantNotFound);
         return ResponseEntity.ok().body(TenantMapper.INSTANCE.toDto(tenant));
     }
 
     @GetMapping("/tenantMonthRented")
-    public ResponseEntity<List<TenantMonthsRentDto>> getTenantMonthRented(){
+    public ResponseEntity<List<TenantMonthsRentDto>> getTenantMonthRented() {
         return ResponseEntity.ok(tenantService.tenantMonthRent());
     }
 
     @PostMapping
     public ResponseEntity<TenantDto> create(@RequestBody TenantRequest tenantRequest) throws ResourceNotFoundException {
-        Tenant createTenant = tenantService.save(
-                new Tenant(null,
-                        tenantRequest.getFirstName(),
-                        tenantRequest.getLastName(),
-                        tenantRequest.getGender(),
-                        tenantRequest.getPhoneNumber(),
-                        tenantRequest.getIdCardNumber(),
-                        tenantRequest.getBirthday(),
-                        relativesService.findById(tenantRequest.getRelativesId())
-                                .orElseThrow(ExceptionList::relativeNotFound))
+        Tenant createTenant = tenantService.save(tenantService.create(tenantRequest));
 
-        );
         return ResponseEntity.created(URI.create((TenantResource.PATH + "/" + createTenant.getId()))).body(TenantMapper.INSTANCE.toDto(createTenant));
     }
 
@@ -74,18 +66,8 @@ public class TenantResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TenantDto> update(@PathVariable(value = "id") Integer id, @RequestBody TenantRequest tenantRequest) throws ResourceNotFoundException {
-        Tenant editTenant = tenantService.findById(id)
-                .orElseThrow(ExceptionList::tenantNotFound);
-        editTenant.setFirstName(tenantRequest.getFirstName());
-        editTenant.setLastName(tenantRequest.getLastName());
-        editTenant.setGender(tenantRequest.getGender());
-        editTenant.setPhoneNumber(tenantRequest.getPhoneNumber());
-        editTenant.setIdCardNumber(tenantRequest.getIdCardNumber());
-        editTenant.setBirthday(tenantRequest.getBirthday());
-        editTenant.setRelatives(relativesService.findById(tenantRequest.getRelativesId())   .orElseThrow(ExceptionList::relativeNotFound));
-
-        Tenant tenantUpdate = tenantService.save(editTenant);
+    public ResponseEntity<TenantDto> update(@PathVariable(value = "id") Integer tenantId, @RequestBody TenantRequest tenantRequest) throws ResourceNotFoundException {
+        Tenant tenantUpdate = tenantService.save(tenantService.edit(tenantId,tenantRequest));
 
         return ResponseEntity.ok(TenantMapper.INSTANCE.toDto(tenantUpdate));
     }

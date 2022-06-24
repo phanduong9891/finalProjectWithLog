@@ -63,30 +63,16 @@ public class RoomResource {
 
     @PostMapping
     public ResponseEntity<RoomDto> create(@RequestBody RoomRequest roomRequest){
-        Room createRoom = roomService.save(new Room(
-                null,
-                roomRequest.getRoomNumber(),
-                roomRequest.getRoomType(),
-                roomRequest.getRoomStatus(),
-                ownerService.findById(roomRequest.getOwnerId())
-                        .orElseThrow(ExceptionList::ownerNotFound)
-        ));
-        System.out.println(createRoom);
+        Room createRoom = roomService.save(roomService.create(roomRequest));
+
         return ResponseEntity.created(URI.create(RoomResource.PATH + "/" + createRoom.getId())).body(RoomMapper.INSTANCE.toDto(createRoom));
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<RoomDto> update(@PathVariable(value = "id") Integer id, @RequestBody RoomRequest roomRequest){
-        Room editRoom = roomService.findById(id)
-                .orElseThrow(ExceptionList::roomNotFound);
-        editRoom.setRoomNumber(roomRequest.getRoomNumber());
-        editRoom.setRoomType(roomRequest.getRoomType());
-        editRoom.setStatus(roomRequest.getRoomStatus());
-        editRoom.setOwner(ownerService.findById(roomRequest.getOwnerId())
-                        .orElseThrow(ExceptionList::ownerNotFound));
 
-        Room roomUpdate = roomService.save(editRoom);
+        Room roomUpdate = roomService.save(roomService.edit(id,roomRequest));
 
         return ResponseEntity.ok(RoomMapper.INSTANCE.toDto(roomUpdate));
     }

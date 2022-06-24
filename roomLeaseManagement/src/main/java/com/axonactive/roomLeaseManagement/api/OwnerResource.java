@@ -37,14 +37,9 @@ public class OwnerResource {
 
     @PostMapping
     public ResponseEntity<OwnerDto> create(@RequestBody OwnerDto ownerDto) {
-        Owner createOwner = ownerService.save(
-                new Owner(null,
-                        ownerDto.getFirstName(),
-                        ownerDto.getLastName(),
-                        ownerDto.getPhoneNumber(),
-                        ownerDto.getEmail(),
-                        ownerDto.getGender()
-                ));
+
+        Owner createOwner = ownerService.save(ownerService.create(ownerDto));
+
         return ResponseEntity.created(URI.create((OwnerResource.PATH + "/" + createOwner.getId()))).body(OwnerMapper.INSTANCE.toDto(createOwner));
     }
 
@@ -57,17 +52,9 @@ public class OwnerResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OwnerDto> update(@PathVariable(value = "id") Integer id, @RequestBody OwnerDto ownerDto){
-        Owner editOwner = ownerService.findById(id)
-                .orElseThrow(ExceptionList::ownerNotFound);
+    public ResponseEntity<OwnerDto> update(@PathVariable(value = "id") Integer ownerId, @RequestBody OwnerDto ownerDto){
 
-        editOwner.setFirstName(ownerDto.getFirstName());
-        editOwner.setLastName(ownerDto.getLastName());
-        editOwner.setPhoneNumber(ownerDto.getPhoneNumber());
-        editOwner.setEmail(ownerDto.getEmail());
-        editOwner.setGender(ownerDto.getGender());
-
-        Owner ownerUpdate = ownerService.save(editOwner);
+        Owner ownerUpdate = ownerService.save(ownerService.edit(ownerId, ownerDto));
 
         return ResponseEntity.ok(OwnerMapper.INSTANCE.toDto(ownerUpdate));
     }
