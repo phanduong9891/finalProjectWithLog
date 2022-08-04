@@ -15,4 +15,6 @@ class TenantServiceImplTest {
     void tenantMonthRent() {
         assertEquals(0,tenantService.tenantMonthRent());
     }
+
+
 }

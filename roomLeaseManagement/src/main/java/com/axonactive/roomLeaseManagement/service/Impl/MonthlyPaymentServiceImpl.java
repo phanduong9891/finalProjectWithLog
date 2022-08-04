@@ -87,6 +87,7 @@ public class MonthlyPaymentServiceImpl implements MonthlyPaymentService {
                 paidAmountThroughMethod(date1,date2,PaymentMethod.CARD));
     }
 
+
     @Override
     public List<MonthlyPayment> findByPaid(Boolean status) {
         return monthlyPaymentRepository.findByPaid(status);
